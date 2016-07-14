@@ -9,6 +9,8 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 {
     public class AtomicParser
     {
+        private ChessAtomicCrawlingContext db = new ChessAtomicCrawlingContext();
+
         int countGames = 0;
         const string countGamesLabel = "<div class=\"search_status\">\n    <strong>";   // <div class="search_status"> <strong>1,585 games found</strong>
         const string gameElementLabel = "<div class=\"game_row paginated_element\">";
@@ -74,7 +76,7 @@ namespace Chess.Atomic.Crawling.ParsingClasses
         //const string sep1 = "<div id=\"chat\" class=\"side_box\"></div>";
         //const string sep2 = "";
 
-        public void ParseGame(string gameId, string gameInfo)
+        public bool ParseGame(string gameId, string gameInfo)
         {
             AtomicGameInfo element = new AtomicGameInfo { id = gameId };
 
@@ -102,9 +104,22 @@ namespace Chess.Atomic.Crawling.ParsingClasses
                 currMoveIndex = gameInfo.IndexOf(MoveLabel);
             }
 
-            gameElements.Add(element);
+            try
+            {
+                db.AtomicGameInfo.Add(element);
+                db.SaveChanges();
 
-            ++countGames;
+                gameElements.Add(element);
+
+                ++countGames;
+
+                return true;
+            }
+            catch (Exception exc)
+            {
+                return false;
+            }
+
         }
     }
 }

@@ -7,22 +7,22 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Chess.Atomic.Crawling.Models;
-using Chess.Atomic.Crawling.Models.ViewModels;
 using Chess.Atomic.Crawling.ParsingClasses;
 using System.Threading;
+using Chess.Atomic.Crawling.Models.ViewModels;
 
 namespace Chess.Atomic.Crawling.Controllers
 {
     public class GameMovesController : Controller
     {
-        private ChessAtomicCrawlingContext db = new ChessAtomicCrawlingContext();
+        
 
         public ActionResult Create([Bind(Include = "id,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,tplus")] AtomicGameInfo atomicGameInfo)
         {
             if (ModelState.IsValid)
             {
-                db.AtomicGameInfo.Add(atomicGameInfo);
-                db.SaveChanges();
+                //db.AtomicGameInfo.Add(atomicGameInfo);
+                //db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -33,7 +33,7 @@ namespace Chess.Atomic.Crawling.Controllers
         {
             if (ModelState.IsValid)
             {
-                string url = "https://en.lichess.org/@/Aragorn1/search";
+                string url = String.Format("https://en.lichess.org/@/{0}/search", playerId);
 
                 var webClient = new WebClient();
                 webClient.QueryString.Add("perf", "14");
@@ -49,49 +49,67 @@ namespace Chess.Atomic.Crawling.Controllers
                 Queue<string> failedDownloads = new Queue<string>();
                 int failsInSequence = 0;
 
+                Queue<string> failedPages = new Queue<string>();
+                int failedPagesInSequence = 0;
+
                 using (webClient)
                 {
-                    // получаем список игр в результатах поиска (сейчас только тобы получить количество игр)
+                    // получаем список игр в результатах поиска (сейчас только чтобы получить количество игр)
                     listOfGames = webClient.DownloadString(url);
                     countGames = atomic.ParseFirstPage(ref listOfGames);
 
                     int currPage = 1;
 
+
+
                     while (atomic.GetCountGames() < countGames)
                     {
-                        // получаем список игр в результатах поиска ( теперь будем извлекать id )
-                        listOfGames = webClient.DownloadString(url);
+                        bool keepParse = true;
 
-                        // извлекаем id в gamesId
-                        atomic.ParseListOfGames(listOfGames, ref gamesId);
-
-                        // если в ответе не было списка игр, то завершаем парсинг
-                        if (gamesId.Count == 0) break; 
-
-                        while (gamesId.Count > 0)
+                        try
                         {
-                            using (webClient2)
+                            // получаем список игр в результатах поиска ( теперь будем извлекать id )
+                            listOfGames = webClient.DownloadString(url);
+
+                            // извлекаем id в gamesId
+                            atomic.ParseListOfGames(listOfGames, ref gamesId);
+
+                            // если в ответе не было списка игр, то завершаем парсинг
+                            if (gamesId.Count == 0) break;
+
+                            while (gamesId.Count > 0)
                             {
-                                string currGameId = gamesId.Dequeue();
-
-                                string gameInfo = string.Empty;
-
-                                // загружаем инфу о текущей игре
-                                try
+                                using (webClient2)
                                 {
-                                    gameInfo = webClient2.DownloadString("https://en.lichess.org/" + currGameId);
-                                    // парсим ответ, полученный в предыдущем запросе
-                                    atomic.ParseGame(currGameId, gameInfo);
-                                    failsInSequence = 0;
-                                }
-                                catch (Exception exc)
-                                {
-                                    failedDownloads.Enqueue(currGameId);
-                                    Thread.Sleep(2000);
-                                    ++failsInSequence;
+                                    string currGameId = gamesId.Dequeue();
 
+                                    string gameInfo = string.Empty;
+
+                                    // загружаем инфу о текущей игре
+                                    try
+                                    {
+                                        gameInfo = webClient2.DownloadString("https://en.lichess.org/" + currGameId);
+                                        // парсим ответ, полученный в предыдущем запросе
+                                        keepParse = atomic.ParseGame(currGameId, gameInfo);
+                                        failsInSequence = 0;
+                                    }
+                                    catch (Exception exc)
+                                    {
+                                        failedDownloads.Enqueue(currGameId);
+                                        Thread.Sleep(2000);
+                                        ++failsInSequence;
+
+                                    }
                                 }
                             }
+                        }
+                        catch (Exception exc)
+                        {
+                            failedPages.Enqueue(currPage.ToString());
+                            Thread.Sleep(2000);
+                            ++failedPagesInSequence;
+
+                            if (failedPagesInSequence > 5) keepParse = false;
                         }
 
                         // увеличиваем страницу
@@ -100,17 +118,50 @@ namespace Chess.Atomic.Crawling.Controllers
                         webClient.QueryString["page"] = currPage.ToString();
 
                         // temporarily restriction one page for checkout
-                        if (currPage == 2) break; 
+                        if (!keepParse) break;
                     }
                 }
 
 
-                return View("~/Views/Home/Index.cshtml", atomic.gameElements);
+                //return View("~/Views/Home/Index.cshtml", atomic.gameElements.Take(10));
             }
 
-            return View("~/Views/Home/Index", "ModelState not valid");
+            return View("~/Views/Home/Index.cshtml", "ModelState not valid");
         }
 
+
+        public ActionResult Hint([Bind(Include = "moves,winner")]string moves, string winner)
+        {
+            HintModel hints = new HintModel();
+
+            hints.currMoves = moves;
+
+            hints.winner = winner;
+
+            using (var context = new ChessAtomicCrawlingContext())
+            {
+                GameStatus res = string.Equals(winner, "white") ? GameStatus.WhiteVictorious : GameStatus.BlackVictorious; 
+
+                var games = from b in context.AtomicGameInfo
+                            where b.status == res && b.moves.StartsWith(moves)
+                            select b;
+
+                string nextMove = string.Empty;
+
+                int startIndex = moves.Length;
+
+                foreach (var g in games)
+                {
+                    nextMove = g.moves.Substring(startIndex, 4);
+
+                    if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
+                    else hints.hints.Add(nextMove, 1);
+                }
+            }
+
+
+            return View("~/Views/GameMoves/Hints.cshtml", hints); 
+        }
 
         //// GET: GameMoves
         //public ActionResult Index()

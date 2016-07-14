@@ -126,7 +126,7 @@
     </Compile>
     <Compile Include="Models\ChessAtomicCrawlingContext.cs" />
     <Compile Include="Models\AtomicGameInfo.cs" />
-    <Compile Include="Models\ViewModels\ResponseView.cs" />
+    <Compile Include="Models\ViewModels\HintModel.cs" />
     <Compile Include="ParsingClasses\AtomicParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -164,10 +164,10 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\GameMoves\Hints.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\GameMoves\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
