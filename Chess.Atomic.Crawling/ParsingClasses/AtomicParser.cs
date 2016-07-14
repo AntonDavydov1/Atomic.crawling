@@ -9,7 +9,7 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 {
     public class AtomicParser
     {
-        private ChessAtomicCrawlingContext db = new ChessAtomicCrawlingContext();
+        //private ChessAtomicCrawlingContext db = new ChessAtomicCrawlingContext();
 
         int countGames = 0;
         const string countGamesLabel = "<div class=\"search_status\">\n    <strong>";   // <div class="search_status"> <strong>1,585 games found</strong>
@@ -78,7 +78,7 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
         public bool ParseGame(string gameId, string gameInfo)
         {
-            AtomicGameInfo element = new AtomicGameInfo { id = gameId };
+            AtomicGameInfo element = new AtomicGameInfo { id = gameId, moves = string.Empty };
 
             gameInfo = gameInfo.Substring(gameInfo.IndexOf(whitePlayerLabel) + whitePlayerLabel.Length);
             element.white = gameInfo.Substring(0, gameInfo.IndexOf("\">"));
@@ -106,8 +106,8 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
             try
             {
-                db.AtomicGameInfo.Add(element);
-                db.SaveChanges();
+                //db.AtomicGameInfo.Add(element);
+                //db.SaveChanges();
 
                 gameElements.Add(element);
 
