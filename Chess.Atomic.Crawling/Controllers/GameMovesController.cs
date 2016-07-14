@@ -46,10 +46,10 @@ namespace Chess.Atomic.Crawling.Controllers
                 Queue<string> gamesId = new Queue<string>();
                 var webClient2 = new WebClient();
 
-                Queue<string> failedDownloads = new Queue<string>();
-                int failsInSequence = 0;
+                //Queue<string> failedDownloads = new Queue<string>();
+                //int failsInSequence = 0;
 
-                Queue<string> failedPages = new Queue<string>();
+                //Queue<string> failedPages = new Queue<string>();
                 int failedPagesInSequence = 0;
 
                 using (webClient)
@@ -91,13 +91,15 @@ namespace Chess.Atomic.Crawling.Controllers
                                         gameInfo = webClient2.DownloadString("https://en.lichess.org/" + currGameId);
                                         // парсим ответ, полученный в предыдущем запросе
                                         keepParse = atomic.ParseGame(currGameId, gameInfo);
-                                        failsInSequence = 0;
+                                        //failsInSequence = 0;
                                     }
                                     catch (Exception exc)
                                     {
-                                        failedDownloads.Enqueue(currGameId);
+                                        //failedDownloads.Enqueue(currGameId);
                                         Thread.Sleep(2000);
-                                        ++failsInSequence;
+                                        //++failsInSequence;
+
+                                        gamesId.Enqueue(currGameId);
 
                                     }
                                 }
@@ -105,7 +107,10 @@ namespace Chess.Atomic.Crawling.Controllers
                         }
                         catch (Exception exc)
                         {
-                            failedPages.Enqueue(currPage.ToString());
+                            //failedPages.Enqueue(currPage.ToString());
+
+                            --currPage;
+
                             Thread.Sleep(2000);
                             ++failedPagesInSequence;
 
