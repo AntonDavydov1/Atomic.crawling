@@ -33,34 +33,23 @@ namespace Chess.Atomic.Crawling.Controllers
         {
             if (ModelState.IsValid)
             {
-                string[] players = new string[] { /*"tipau", "krasss", "penguingim1", "Fyuxs", "Mabrook",*/
+                string[] players = new string[] { /*"tipau", "krasss", "penguingim1", "Fyuxs", "Mabrook",
                 "pashpash", "hUdSonZiNho", "Ardavan74", "anthonypower1", "Ghostknight",
-                "FlyAway", "Rhex", "moustruito", "vampire_rodent", "MagoAtomico",
+                "FlyAway", "Rhex", "moustruito", "Ardavan74", "vampire_rodent", "MagoAtomico",
                 "Gannet", "lord-zero", "victorvi", "kreedz", "jananth1",
-                "OrigamiCaptainFaN", "Chacarron", "nnnnnnn7", "FixedPoint", "JimmeeX", "Frmiranda137", "slowwinning", "Sikstufff", "Shampanskoe_Vino", "Pasili"
+                */
+                    
+                    
+                   // "OrigamiCaptainFaN", "Chacarron", "nnnnnnn7", "FixedPoint", "JimmeeX", "Frmiranda137", "slowwinning", "Sikstufff", "Shampanskoe_Vino", "Pasili"
 
 
 
-//31	 NM blitzbullet	2367	14
-//32	 Run_it	2364	56
-//33	 doggonit	2361	165
-//34	 MathNetaji	2354	6
-//35	 Nonpareil	2342	29
-//36	 Caustic	2342	45
-//37	 j0e	2337	15
-//38	 mob123	2326	39
-//39	 NM Deathmaster	2322	33
-//40	 LANGSDORF	2303	21
-//41	 ukimix	2303	30
-//42	 Sanhedrin	2300	1
-//43	 Unihedron	2298	18
-//44	 Godislove	2282	82
-//45	 Kleerkast	2282	41
-//46	 brd123	2281	78
-//47	 TheLlamaLord	2281	23
-//48	 AC8	2279	19
-//49	 yoavjm	2279	17
-//50	 ivigorsev61	2269	6
+                    "blitzbullet", "Run_it" //, "MathNetaji" //, "Nonpareil", "Caustic", "j0e", "mob123", "Deathmaster", "LANGSDORF
+                
+                
+                // ukimix", "Sanhedrin", "Unihedron", "Godislove", "Kleerkast", "brd123", "TheLlamaLord", "AC8", "yoavjm", "ivigorsev61"
+
+
 //51	 SpaWnn	2261	10
 //52	 pablito1970	2255	54
 //53	 prostoprosto	2253	38
@@ -71,6 +60,8 @@ namespace Chess.Atomic.Crawling.Controllers
 //58	 miniond	2233	35
 //59	 raph22	2232	3
 //60	 FierceNapkin	2231	29
+
+
 //61	 eshshennawy92	2220	14
 //62	 Vuduland	2214	7
 //63	 Shahmatti	2214	45
@@ -81,6 +72,8 @@ namespace Chess.Atomic.Crawling.Controllers
 //68	 younameit	2201	5
 //69	 Project_2200	2200	37
 //70	 g0ofi	2193	52
+
+
 //71	 High_Voltage	2191	42
 //72	 theatomicpatzer	2191	36
 //73	 Solidworks	2189	18
@@ -91,6 +84,8 @@ namespace Chess.Atomic.Crawling.Controllers
 //78	 breizhion	2171	22
 //79	 javor07	2171	23
 //80	 KillingField	2166	17
+
+
 //81	 Kristal	2165	11
 //82	 Chess_player_1234	2165	78
 //83	 Bogdan__2001	2161	26
@@ -101,16 +96,9 @@ namespace Chess.Atomic.Crawling.Controllers
 //88	 hata	2150	35
 //89	 stiFfenBishoP	2150	
 //90	 Kasique-8	2149	29
-//91	 scottecs	2148	4
-//92	 kamikazee	2147	72
-//93	 Hyp3rspeed	2144	43
-//94	 DaeneryStormborn	2141	16
-//95	 Italianmachine97	2139	6
-//96	 wowa1963	2134	3
-//97	 Sorsi	2134	6
-//98	 seanysean	2133	1
-//99	 sansanich97	2127	109
-//100	 ChessWhiz	2126	53
+
+
+//91	                 "scottecs", "kamikazee", "Hyp3rspeed", "DaeneryStormborn", "Italianmachine97", "wowa1963", "Sorsi", "seanysean", "sansanich97", "ChessWhiz"
                 
                 };
 
@@ -154,16 +142,26 @@ namespace Chess.Atomic.Crawling.Controllers
 
             using (webClient)
             {
-                // получаем список игр в результатах поиска (сейчас только чтобы получить количество игр)
-                listOfGames = webClient.DownloadString(url);
-                countGames = atomic.ParseFirstPage(ref listOfGames);
+                try
+                {
+                    // получаем список игр в результатах поиска (сейчас только чтобы получить количество игр)
+                    listOfGames = webClient.DownloadString(url);
+                    countGames = atomic.ParseFirstPage(ref listOfGames);
 
+                }
+                catch (Exception exc)
+                {
+ 
+                }
 
 
                 int currWeek = 0;
 
                 webClient.QueryString.Add("dateMin", "0w");
                 webClient.QueryString.Add("dateMax", "2w");
+
+                webClient.QueryString.Add("sort.field", "a");
+                webClient.QueryString.Add("sort.order", "desc");
 
                 int currPage;
 
@@ -307,10 +305,13 @@ namespace Chess.Atomic.Crawling.Controllers
 
                 foreach (var g in games)
                 {
-                    nextMove = g.moves.Substring(startIndex, 4);
+                    if (g.moves.Length >= startIndex + 4)
+                    {
+                        nextMove = g.moves.Substring(startIndex, 4);
 
-                    if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
-                    else hints.hints.Add(nextMove, 1);
+                        if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
+                        else hints.hints.Add(nextMove, 1);
+                    }
                 }
             }
 
