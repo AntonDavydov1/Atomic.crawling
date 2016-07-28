@@ -1,4 +1,5 @@
 ﻿using Chess.Atomic.Crawling.Models;
+using Chess.Atomic.Crawling.WebClasses;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,17 +12,21 @@ namespace Chess.Atomic.Crawling.ParsingClasses
     {
         //private ChessAtomicCrawlingContext db = new ChessAtomicCrawlingContext();
 
-        int countGames = 0;
+        public AtomicWebClientPlayer webClient = new AtomicWebClientPlayer();
+
+        public SelectionHandler selector = new SelectionHandler();
+
+        //int countGames = 0;
         const string countGamesLabel = "<div class=\"search_status\">\n    <strong>";   // <div class="search_status"> <strong>1,585 games found</strong>
         const string gameElementLabel = "<div class=\"game_row paginated_element\">";
 
         public List<AtomicGameInfo> gameElements = new List<AtomicGameInfo>();
 
 
-        public int GetCountGames()
-        {
-            return countGames;
-        }
+        //public int GetCountGames()
+        //{
+        //    return countGames;
+        //}
 
         public int ParseFirstPage(ref string searchResult)
         {
@@ -41,16 +46,31 @@ namespace Chess.Atomic.Crawling.ParsingClasses
             return countGamesTotal;
         }
 
-        public void ParseListOfGames(string searchResult, ref Queue<string> gamesId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchResult">bruto page from search</param>
+        /// <returns>set of game overviews (div element with class="game_row paginated_element"). Maximum expected 9 elements </returns>
+        private string[] ParsePage(string searchResult)
         {
             searchResult = searchResult.Substring(searchResult.IndexOf(gameElementLabel));
 
-            string[] gamesIdArray = searchResult.Split(new string[] { gameElementLabel }, StringSplitOptions.RemoveEmptyEntries);
+            string[] gamesOverview = searchResult.Split(new string[] { gameElementLabel }, StringSplitOptions.RemoveEmptyEntries);
 
-            for (int i = 0; i < gamesIdArray.Length; ++i)
+            return gamesOverview;
+        }
+
+        private void GetGamesId(string[] gamesOverview, ref Queue<string> gamesId)
+        {            
+            for (int i = 0; i < gamesOverview.Length; ++i)
             {
-                gamesId.Enqueue(ExtractGameId(gamesIdArray[i]));
+                gamesId.Enqueue(ExtractGameId(gamesOverview[i]));
             }
+        }
+
+        public void ParsPageAndGetGamesId(string brutoPage, ref Queue<string> gamesId)
+        {
+            GetGamesId(ParsePage(brutoPage), ref gamesId);
         }
 
         const string gameIdLabel = "\n  \n  \n  <a href=\"/";
@@ -106,12 +126,9 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
             try
             {
-                //db.AtomicGameInfo.Add(element);
-                //db.SaveChanges();
-
                 gameElements.Add(element);
 
-                ++countGames;
+                //++countGames;
 
                 return true;
             }
@@ -120,6 +137,25 @@ namespace Chess.Atomic.Crawling.ParsingClasses
                 return false;
             }
 
+        }
+
+        public DateTime GetDateTimeFromFirst(string brutoPage)
+        {
+            string[] gamesOverview = ParsePage(brutoPage);
+
+            return GetDateTimeFromGameOverview(gamesOverview[0]);
+        }
+
+        public DateTime GetDateTimeFromGameOverview(string gameOverview)
+        {
+
+
+            DateTime date = DateTime.Now;
+            //date.
+
+
+
+            return date;
         }
     }
 }

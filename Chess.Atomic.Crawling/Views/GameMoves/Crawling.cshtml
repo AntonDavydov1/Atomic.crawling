@@ -1,0 +1,44 @@
+﻿
+@model List<Chess.Atomic.Crawling.Models.ViewModels.WathcModel.WatchViewModel>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Hints</title>
+</head>
+<body>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.Label("Участок")
+            </th>
+            <th>
+                @Html.Label("Затраченное время")
+            </th>
+            <th>
+                @Html.Label("Время в %")
+            </th>
+        </tr>
+        @foreach (Chess.Atomic.Crawling.Models.ViewModels.WathcModel.WatchViewModel m in Model)
+        {
+            <tr>
+                <td>
+                   @m.section
+                </td>
+                <td>
+                    @m.timeElapsed
+                </td>
+                <td>
+                    @m.timePercentage
+                </td>
+            </tr>
+        }
+      
+    </table>
+</body>
+</html>

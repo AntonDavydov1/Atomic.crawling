@@ -10,11 +10,14 @@ using Chess.Atomic.Crawling.Models;
 using Chess.Atomic.Crawling.ParsingClasses;
 using System.Threading;
 using Chess.Atomic.Crawling.Models.ViewModels;
+using System.Diagnostics;
+using Chess.Atomic.Crawling.WebClasses;
 
 namespace Chess.Atomic.Crawling.Controllers
 {
     public class GameMovesController : Controller
     {
+        WathcModel watch = new WathcModel();
         
 
         public ActionResult Create([Bind(Include = "id,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,tplus")] AtomicGameInfo atomicGameInfo)
@@ -44,7 +47,7 @@ namespace Chess.Atomic.Crawling.Controllers
 
 
 
-                    "blitzbullet", "Run_it" //, "MathNetaji" //, "Nonpareil", "Caustic", "j0e", "mob123", "Deathmaster", "LANGSDORF
+                    /*"blitzbullet"*/ "Run_it" //, "MathNetaji" //, "Nonpareil", "Caustic", "j0e", "mob123", "Deathmaster", "LANGSDORF
                 
                 
                 // ukimix", "Sanhedrin", "Unihedron", "Godislove", "Kleerkast", "brd123", "TheLlamaLord", "AC8", "yoavjm", "ivigorsev61"
@@ -102,32 +105,30 @@ namespace Chess.Atomic.Crawling.Controllers
                 
                 };
 
+                watch.totalTime.Start();
+
                 for (int i = 0; i < players.Length; ++i)
                     ParseOnePlayer(players[i]);
 
+               // Thread.Sleep(1000);
 
-                //return View("~/Views/Home/Index.cshtml", atomic.gameElements.Take(10));
+                watch.totalTime.Stop();
+
+                watch.ConvertResults();
+
+                return View(watch.data);
             }
 
             return View("~/Views/Home/Index.cshtml", "ModelState not valid");
         }
 
-        private static void ParseOnePlayer(string playerId)
+        private void ParseOnePlayer(string playerId)
         {
-            string url = String.Format("https://en.lichess.org/@/{0}/search", playerId);
 
-            var webClient = new WebClient();
-            webClient.QueryString.Add("perf", "14");
-
-
-
-
-
-            webClient.QueryString.Add("page", "1");
 
             string listOfGames = string.Empty;
             AtomicParser atomic = new AtomicParser();
-            int countGames = 0;
+            //int countGames = 0;
 
             Queue<string> gamesId = new Queue<string>();
             var webClient2 = new WebClient();
@@ -140,146 +141,231 @@ namespace Chess.Atomic.Crawling.Controllers
 
             int failedMonthInSequence = 0;
 
-            using (webClient)
+
+            atomic.webClient.Init(playerId);
+
+            // получаем список игр одного конкретного игрока в результатах поиска (сейчас только чтобы получить количество игр)
+            //listOfGames = webClient.GetResponse();
+
+
+
+            //countGames = atomic.ParseFirstPage(ref listOfGames);
+
+
+
+
+            //int currWeek = 0;
+
+            atomic.webClient.SetParams(Tuple.Create("dateMin", "0w"), Tuple.Create("dateMax", "2w"));
+
+            atomic.webClient.SetSortDescending();
+
+            //int currPage;
+
+            bool checkExist = false;
+
+            atomic.selector.Init(atomic.webClient, atomic);
+
+            atomic.selector.InitDateInterval();
+
+            var context = new ChessAtomicCrawlingContext();
+
+            while (atomic.selector.NextDateInterval() && failedMonthInSequence < 50)
             {
-                try
+                // 1
+                watch.t[1].Start();
+
+                //currPage = 1;
+                //webClient.SetPage(currPage);
+
+
+                // 1
+                watch.t[1].Stop();
+
+
+                while (atomic.selector.NextPage())
                 {
-                    // получаем список игр в результатах поиска (сейчас только чтобы получить количество игр)
-                    listOfGames = webClient.DownloadString(url);
-                    countGames = atomic.ParseFirstPage(ref listOfGames);
-
-                }
-                catch (Exception exc)
-                {
- 
-                }
 
 
-                int currWeek = 0;
+                //    bool keepParse = true;
 
-                webClient.QueryString.Add("dateMin", "0w");
-                webClient.QueryString.Add("dateMax", "2w");
-
-                webClient.QueryString.Add("sort.field", "a");
-                webClient.QueryString.Add("sort.order", "desc");
-
-                int currPage;
-
-                while (atomic.GetCountGames() < countGames && failedMonthInSequence < 50)
-                {
-                    currPage = 1;
-                    webClient.QueryString["page"] = "1";
-
-                    using (var context = new ChessAtomicCrawlingContext())
+                    try
                     {
+                        // 2
+                        watch.t[2].Start();
+                        // получаем список игр в результатах поиска ( теперь будем извлекать id )
+                        listOfGames = atomic.webClient.GetResponse();
 
-                        while (true)
+                        // 2
+                        watch.t[2].Stop();
+
+                        // 3
+                        watch.t[3].Start();
+
+                        // извлекаем id в gamesId
+                        atomic.ParsPageAndGetGamesId(listOfGames, ref gamesId);
+
+                        // 3
+                        watch.t[3].Stop();
+
+
+                        // если в ответе не было списка игр, то завершаем парсинг
+                        if (gamesId.Count == 0) break;
+
+                        while (gamesId.Count > 0)
                         {
-
-
-                            bool keepParse = true;
-
-                            try
+                            using (webClient2)
                             {
-                                // получаем список игр в результатах поиска ( теперь будем извлекать id )
-                                listOfGames = webClient.DownloadString(url);
+                                string currGameId = gamesId.Dequeue();
 
-                                // извлекаем id в gamesId
-                                atomic.ParseListOfGames(listOfGames, ref gamesId);
+                                string gameInfo = string.Empty;
 
-                                // если в ответе не было списка игр, то завершаем парсинг
-                                if (gamesId.Count == 0) break;
+                                // 4
+                                watch.t[4].Start();
 
-                                while (gamesId.Count > 0)
+                                checkExist = context.AtomicGameInfo.Count(a => a.id == currGameId) > 0;
+
+                                // 4
+                                watch.t[4].Stop();
+
+                                if (checkExist)
                                 {
-                                    using (webClient2)
-                                    {
-                                        string currGameId = gamesId.Dequeue();
+                                    continue;
+                                }
 
-                                        string gameInfo = string.Empty;
+                                // загружаем инфу о текущей игре
+                                try
+                                {
+                                    // 5
+                                    watch.t[5].Start();
 
-                                        if (context.AtomicGameInfo.Count(a => a.id == currGameId) > 0)
-                                        {
-                                            continue;
-                                        }
+                                    gameInfo = webClient2.DownloadString("https://en.lichess.org/" + currGameId);
 
-                                        // загружаем инфу о текущей игре
-                                        try
-                                        {
-                                            gameInfo = webClient2.DownloadString("https://en.lichess.org/" + currGameId);
-                                            // парсим ответ, полученный в предыдущем запросе
-                                            keepParse = atomic.ParseGame(currGameId, gameInfo);
-                                            //failsInSequence = 0;
-                                        }
-                                        catch (Exception exc)
-                                        {
-                                            //failedDownloads.Enqueue(currGameId);
-                                            Thread.Sleep(2000);
-                                            //++failsInSequence;
+                                    // 5
+                                    watch.t[5].Stop();
 
-                                            gamesId.Enqueue(currGameId);
+                                    // 6
+                                    watch.t[6].Start();
 
-                                        }
-                                    }
+                                    // парсим ответ, полученный в предыдущем запросе
+                                    //keepParse = 
+                                    atomic.ParseGame(currGameId, gameInfo);
+
+                                    // 6
+                                    watch.t[6].Stop();
+
+                                    //failsInSequence = 0;
+                                }
+                                catch (Exception exc)
+                                {
+                                    watch.t[5].Stop();
+                                    watch.t[6].Stop();
+
+                                    // 7
+                                    watch.t[7].Start();
+
+                                    //failedDownloads.Enqueue(currGameId);
+                                    Thread.Sleep(2000);
+                                    //++failsInSequence;
+
+                                    gamesId.Enqueue(currGameId);
+
+                                    // 7
+                                    watch.t[7].Stop();
+
+
                                 }
                             }
-                            catch (ArgumentOutOfRangeException exc)
-                            {
-                                keepParse = false;
-                            }
-                            catch (Exception exc)
-                            {
-                                //failedPages.Enqueue(currPage.ToString());
-
-                                --currPage;
-
-                                Thread.Sleep(2000);
-                                ++failedPagesInSequence;
-
-                                if (failedPagesInSequence > 5) keepParse = false;
-                            }
-
-
-                            // увеличиваем страницу
-                            ++currPage;
-                            // теперь будем получать список игр со следующей страницы
-                            webClient.QueryString["page"] = currPage.ToString();
-
-                            // temporarily restriction one page for checkout
-                            if (!keepParse) break;
                         }
+                    }
+                    catch (ArgumentOutOfRangeException exc)
+                    {
+                        watch.t[2].Stop();
+                        watch.t[3].Stop();
+                        watch.t[4].Stop();
 
-                        currWeek += 2;
+                        //keepParse = false;
+                    }
+                    catch (Exception exc)
+                    {
+                        watch.t[2].Stop();
+                        watch.t[3].Stop();
+                        watch.t[4].Stop();
 
-                        webClient.QueryString["dateMin"] = currWeek.ToString() + "w";
-                        webClient.QueryString["dateMax"] = (currWeek + 2).ToString() + "w";
+                        //failedPages.Enqueue(currPage.ToString());
 
+                        // 8
+                        watch.t[8].Start();
 
+                        //--currPage;
 
-                        if (atomic.gameElements.Count > 0)
-                        {
+                        Thread.Sleep(2000);
+                        ++failedPagesInSequence;
 
-                            context.AtomicGameInfo.AddRange(atomic.gameElements);
+                       // if (failedPagesInSequence > 5) keepParse = false;
 
-                            try
-                            {
-                                context.SaveChanges();
-                            }
-                            catch (Exception exc)
-                            { }
-                            finally
-                            {
-                                atomic.gameElements.Clear();
-                            }
-                        }
-                        else
-                        {
-                            ++failedMonthInSequence;
-                        }
+                        // 8
+                        watch.t[8].Stop();
 
                     }
+
+
+                    // увеличиваем страницу
+                    //++currPage;
+                    // теперь будем получать список игр со следующей страницы
+                    //webClient.SetPage(currPage);
+
+                    atomic.selector.NextPage();
+
+                    // temporarily restriction one page for checkout
+                //    if (!keepParse) break;
                 }
+
+
+
+                atomic.selector.NextDateInterval();
+
+
+
+                if (atomic.gameElements.Count > 0)
+                {
+                    // 9
+                    watch.t[9].Start();
+
+                    context.AtomicGameInfo.AddRange(atomic.gameElements);
+
+                    // 9
+                    watch.t[9].Stop();
+
+                    try
+                    {
+                        // 10
+                        watch.t[10].Start();
+
+                        context.SaveChanges();
+
+                        // 10
+                        watch.t[10].Stop();
+                    }
+                    catch (Exception exc)
+                    {
+                        // 10
+                        watch.t[10].Stop();
+
+                    }
+                    finally
+                    {
+                        atomic.gameElements.Clear();
+                    }
+                }
+                else
+                {
+                    ++failedMonthInSequence;
+                }
+
+
             }
+
         }
 
 

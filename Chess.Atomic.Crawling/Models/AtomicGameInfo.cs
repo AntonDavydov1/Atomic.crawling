@@ -16,6 +16,10 @@ namespace Chess.Atomic.Crawling.Models
         public string moves { get; set; }
 
         public GameStatus status { get; set; }
+
+        public int whiteRaiting { get; set; }
+
+        public int blackRaiting { get; set; }
     }
 
     public enum GameStatus

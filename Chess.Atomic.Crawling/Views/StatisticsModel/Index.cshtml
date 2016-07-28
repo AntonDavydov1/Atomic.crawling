@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Chess.Atomic.Crawling.Models.ViewModels.StatisticsModel>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.raiting)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.lichessCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.localCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.percentage)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.raiting)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.lichessCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.localCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.percentage)
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>
