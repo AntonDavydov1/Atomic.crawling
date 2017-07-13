@@ -6,9 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Chess.Atomic.Crawling.Models;
 
-namespace Chess.Atomic.Crawling.Controllers
+namespace Chess.Atomic.Crawling.Models
 {
     public class PlayersController
     {
@@ -17,7 +16,8 @@ namespace Chess.Atomic.Crawling.Controllers
 
         public bool Create(Player player)
         {
-            if (player != null && !db.Players.Select(a => a.name).Contains(player.name))
+            //if (player != null && !db.Players.Select(a => a.name).Contains(player.name))
+            if (player != null && db.Players.Find(player.name) == null)
             {
                 try
                 {

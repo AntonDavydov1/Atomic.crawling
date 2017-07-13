@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
+using Chess.Atomic.Crawling.Models;
 
 namespace Chess.Atomic.Crawling.Controllers
 {
