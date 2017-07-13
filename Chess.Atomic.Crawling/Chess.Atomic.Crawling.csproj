@@ -145,6 +145,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\GameMovesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Migrations\201707131007387_Initial.cs" />
+    <Compile Include="Migrations\201707131007387_Initial.Designer.cs">
+      <DependentUpon>201707131007387_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\PlayersController.cs" />
     <Compile Include="Controllers\StartController.cs" />
     <Compile Include="Global.asax.cs">
@@ -227,6 +231,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201707131007387_Initial.resx">
+      <DependentUpon>201707131007387_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
