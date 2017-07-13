@@ -13,5 +13,9 @@ namespace Chess.Atomic.Crawling.Models
 
         public int raiting { get; set; }
 
+        public int localCount { get; set; }
+
+        public int lichessCount { get; set; }
+
     }
 }

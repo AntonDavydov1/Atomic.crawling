@@ -15,7 +15,7 @@ namespace Chess.Atomic.Crawling.Models
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
     
-        public ChessAtomicCrawlingContext() : base("name=ChessAtomicCrawlingContext")
+        public ChessAtomicCrawlingContext() : base("name=ChessAtomicCrawlingNew")
         {
         }
 

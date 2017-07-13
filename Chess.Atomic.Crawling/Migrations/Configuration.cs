@@ -9,7 +9,7 @@ namespace Chess.Atomic.Crawling.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
             //AutomaticMigrationDataLossAllowed = true;
 
             ContextKey = "Chess.Atomic.Crawling.Models.ChessAtomicCrawlingContext";
