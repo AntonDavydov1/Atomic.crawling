@@ -19,13 +19,17 @@ namespace Chess.Atomic.Crawling.Models
         {
         }
 
-        public System.Data.Entity.DbSet<Chess.Atomic.Crawling.Models.AtomicGameInfo> AtomicGameInfo { get; set; }
+        public DbSet<AtomicGameInfo> AtomicGameInfo { get; set; }
 
-        public System.Data.Entity.DbSet<Chess.Atomic.Crawling.Models.Player> Players { get; set; }
+        public DbSet<Player> Players { get; set; }
 
-        public System.Data.Entity.DbSet<Chess.Atomic.Crawling.Models.UpdatesInfo> Updates { get; set; }
+        public DbSet<UpdatesInfo> Updates { get; set; }
 
-        public System.Data.Entity.DbSet<Chess.Atomic.Crawling.Models.AtomicGameInfoOld> AtomicGameInfoOld { get; set; }
+        public DbSet<AtomicGameInfoOld> AtomicGameInfoOld { get; set; }
+
+        public DbSet<GameShort> GameShorts { get; set; }
+
+
     
     }
 }

@@ -153,6 +153,11 @@
     <Compile Include="Migrations\201707131030569_AddCountsToPlayer.Designer.cs">
       <DependentUpon>201707131030569_AddCountsToPlayer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201707131520192_Add_GameShorts.cs" />
+    <Compile Include="Migrations\201707131520192_Add_GameShorts.Designer.cs">
+      <DependentUpon>201707131520192_Add_GameShorts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GameShort.cs" />
     <Compile Include="Models\PlayersController.cs" />
     <Compile Include="Controllers\StartController.cs" />
     <Compile Include="Global.asax.cs">
@@ -242,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707131030569_AddCountsToPlayer.resx">
       <DependentUpon>201707131030569_AddCountsToPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707131520192_Add_GameShorts.resx">
+      <DependentUpon>201707131520192_Add_GameShorts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
