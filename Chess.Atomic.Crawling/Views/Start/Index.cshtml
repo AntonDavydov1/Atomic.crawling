@@ -1,8 +1,5 @@
 ﻿@model IEnumerable<Chess.Atomic.Crawling.Models.ViewModels.StatisticsModel>
 
-@{
-    Layout = null;
-}
 
 <!DOCTYPE html>
 
@@ -50,11 +47,33 @@
                 @Html.DisplayFor(modelItem => item.localCount)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.percentage)
+                @Html.Label("label", item.percentage + "%", new { @class = "percentage", data_player = @item.name })
             </td>
+            <td>
+                @if (item.raiting > 0)
+                {
+                    <input type="button" class="start" value="start" data-player=@item.name />
+                }
+                @*@Html.ActionLink("Start", "ParseOnePlayer", "GameMoves", new { playerId = item.name }, null)
+
+                @Ajax.ActionLink("Start", "ParseOnePlayer", "GameMoves", new { playerId = item.name }, new AjaxOptions {  }, null)*@
+            </td>
+            @*<td>
+                @Html.TextBox("text", 0, new { @class = "progress", data_player = @item.name })
+
+                @Html.Label("label", item.localCount + " out of " + item.lichessCount + " (" + ((item.lichessCount > 0)? item.localCount/item.lichessCount : 0) + "%)")
+            </td>*@
         </tr>
     }
     
     </table>
 </body>
 </html>
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/jquery.signalR-2.2.1.js")
+    @Scripts.Render("~/signalr/hubs")
+    @Scripts.Render("~/Scripts/SignalR/progress.js")
+}

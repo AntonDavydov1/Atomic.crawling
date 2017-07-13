@@ -2,13 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace Chess.Atomic.Crawling.ParsingClasses
 {
     public class SelectionHandler
     {
-        int currWeek = 0;
+        int currDay = 0;
+        int interval = 1;
+
         int currPage;
 
         AtomicWebClientPlayer webClient;
@@ -23,19 +26,44 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
         public bool InitDateInterval()
         {
-            if (webClient.init)
-            {
-                webClient.SetForFirstGame();
-                string res = webClient.GetResponse();
+            //if (webClient.init)
+            //{
+            //    webClient.SetForFirstGame();
 
-                DateTime start = parser.GetDateTimeFromFirst(res);
-                start.AddDays(2);
+            //    string bruto = string.Empty;
 
-                return true;
-            }
+            //    bool succeed = false;
 
-            return false;
-            
+            //    do
+            //    {
+            //        try
+            //        {
+            //            bruto = webClient.GetResponse();
+            //            succeed = true;
+            //        }
+            //        catch (Exception exc)
+            //        {
+            //            Thread.Sleep(1000);
+            //        }
+            //    }
+            //    while (!succeed);
+
+
+            //    if (string.IsNullOrEmpty(bruto)) return false;
+
+            //    currDay = parser.GetCountDaysFromFirst(bruto);
+
+            //    if (currDay <= 0) return false;
+
+            currDay = 180; // manually, because lichess returns list of games in unsorted order.
+
+            interval = 14; // 2 weeks
+
+            return true;
+            //}
+
+            //return false;
+
         }
 
         /// <returns>
@@ -44,9 +72,47 @@ namespace Chess.Atomic.Crawling.ParsingClasses
         /// </returns>
         public bool NextDateInterval()
         {
-            currWeek += 2;
+            InitPage();
 
-            webClient.SetParams(Tuple.Create("dateMin", currWeek.ToString() + "w"), Tuple.Create("dateMax", (currWeek + 2).ToString() + "w"));
+            if (currDay == 0) return false;
+
+            int count = 0;
+
+            do
+            {
+                string dateMax = (currDay - interval) > 0 ? (currDay - interval).ToString() : string.Empty;
+
+                webClient.SetParams(Tuple.Create("dateMin", currDay.ToString() + "d"), Tuple.Create("dateMax", dateMax + "d"));
+
+                string bruto = string.Empty;
+
+                bool succeed = false;
+
+                do
+                {
+                    try
+                    {
+                        bruto = webClient.GetResponse();
+                        succeed = true;
+                    }
+                    catch (Exception exc)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                }
+                while (!succeed);
+
+
+                count = parser.GetCountGamesFromBruto(ref bruto);
+
+                if (count > 350) interval = (int)Math.Floor((double)((interval * 351) / count));
+
+                if (interval < 1) interval = 1;
+            }
+            while (count > 350);
+
+            currDay -= interval; // движемся от n до 0
+            if (currDay < 0) currDay = 0;
 
             return true;
         }
@@ -54,13 +120,16 @@ namespace Chess.Atomic.Crawling.ParsingClasses
         public bool InitPage()
         {
             currPage = 1;
-            webClient.SetPage(currPage);
 
             return true;
         }
 
         public bool NextPage()
         {
+            if (currPage > 39) return false;
+
+            webClient.SetPage(currPage++);
+
             return true;
         }
     }

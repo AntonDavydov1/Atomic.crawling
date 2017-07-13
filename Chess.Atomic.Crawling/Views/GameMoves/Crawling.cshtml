@@ -1,5 +1,5 @@
 ﻿
-@model List<Chess.Atomic.Crawling.Models.ViewModels.WathcModel.WatchViewModel>
+@*@model List<Chess.Atomic.Crawling.Models.ViewModels.WathcModel.WatchViewModel>*@
 @{
     Layout = null;
 }
@@ -24,7 +24,7 @@
                 @Html.Label("Время в %")
             </th>
         </tr>
-        @foreach (Chess.Atomic.Crawling.Models.ViewModels.WathcModel.WatchViewModel m in Model)
+        @*@foreach (Chess.Atomic.Crawling.Models.ViewModels.WathcModel.WatchViewModel m in Model)
         {
             <tr>
                 <td>
@@ -37,7 +37,7 @@
                     @m.timePercentage
                 </td>
             </tr>
-        }
+        }*@
       
     </table>
 </body>

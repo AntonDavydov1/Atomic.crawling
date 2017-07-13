@@ -29,4 +29,17 @@ namespace Chess.Atomic.Crawling.Models
         BlackVictorious,
         Draw
     }
+
+    public class AtomicGameInfoOld
+    {
+        public string id { get; set; }
+
+        public string white { get; set; }
+
+        public string black { get; set; }
+
+        public string moves { get; set; }
+
+        public GameStatus status { get; set; }
+    }
 }

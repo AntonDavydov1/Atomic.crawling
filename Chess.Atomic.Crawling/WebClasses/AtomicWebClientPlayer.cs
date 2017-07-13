@@ -10,11 +10,22 @@ namespace Chess.Atomic.Crawling.WebClasses
         public bool init = false;
 
         public void Init(string playerId) // this set of params will get the info about player raiting and count of games
-        {
-            url = String.Format("https://en.lichess.org/@/{0}/search", playerId);
+        {            
+            ClearParams();
 
+            url = String.Format("https://en.lichess.org/@/{0}/search", playerId);
+                        
             SetParams(Tuple.Create("perf", "14"), Tuple.Create("page", "1"), Tuple.Create("mode", "1"), Tuple.Create("ratingMin", "2300"));  // 14 is identifier for atomic games (as I realized), mode = 1 - rated games only
 
+            init = true;
+        }
+
+        public void InitForGetRaiting(string playerId)
+        {
+            ClearParams();
+
+            url = string.Format("https://en.lichess.org/@/{0}/perf/atomic", playerId);
+            
             init = true;
         }
 

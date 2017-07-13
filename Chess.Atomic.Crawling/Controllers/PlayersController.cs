@@ -12,7 +12,7 @@ namespace Chess.Atomic.Crawling.Controllers
 {
     public class PlayersController
     {
-        private ChessAtomicCrawlingContext db = new ChessAtomicCrawlingContext();
+        public ChessAtomicCrawlingContext db = new ChessAtomicCrawlingContext();
 
 
         public bool Create(Player player)
@@ -22,6 +22,7 @@ namespace Chess.Atomic.Crawling.Controllers
                 try
                 {
                     db.Players.Add(player);
+
                     db.SaveChanges();
 
                     return true;
@@ -52,6 +53,11 @@ namespace Chess.Atomic.Crawling.Controllers
                 }
             }
             else return false;
+        }
+
+        public List<Player> GetPlayers()
+        {
+            return db.Players.ToList();
         }
 
         //public ActionResult DeleteConfirmed(int id)

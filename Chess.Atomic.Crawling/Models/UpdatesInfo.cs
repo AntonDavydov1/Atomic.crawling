@@ -6,12 +6,12 @@ using System.Web;
 
 namespace Chess.Atomic.Crawling.Models
 {
-    public class Player
+    public class UpdatesInfo
     {
         [Key]
-        public string name { get; set; }
+        public string playerName { get; set; }
 
-        public int raiting { get; set; }
-
+        [DataType(DataType.Date)]
+        public DateTime lastUpdate { get; set; }
     }
 }

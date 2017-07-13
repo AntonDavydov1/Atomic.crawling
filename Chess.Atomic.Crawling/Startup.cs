@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
 
-//[assembly: OwinStartup(typeof(Chess.Atomic.Crawling.Startup))]
+[assembly: OwinStartup(typeof(Chess.Atomic.Crawling.Startup))]
 
 namespace Chess.Atomic.Crawling
 {
