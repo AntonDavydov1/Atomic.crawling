@@ -1,0 +1,40 @@
+﻿@model Chess.Atomic.Crawling.Models.ViewModels.HintModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Hints</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.Label("Количество")
+            </th>
+            <th>
+                @Html.Label("Ход")
+            </th>
+        </tr>
+    
+    @foreach (var item in Model.hints) {
+        <tr>
+            <td>
+                @Html.ActionLink(item.Key, "Hintold", "GameMoves", new { winner = Model.winner, moves = Model.currMoves + item.Key }, null)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

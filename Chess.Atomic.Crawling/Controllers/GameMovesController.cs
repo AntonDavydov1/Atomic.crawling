@@ -86,7 +86,7 @@ namespace Chess.Atomic.Crawling.Controllers
             }
 
 
-            return View("~/Views/GameMoves/Hints.cshtml", hints);
+            return View("~/Views/GameMoves/Hintsold.cshtml", hints);
         }
     }
 }

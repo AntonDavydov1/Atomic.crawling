@@ -10,7 +10,7 @@ namespace Chess.Atomic.Crawling.ParsingClasses
     public class SelectionHandler
     {
         int currDay = 0;
-        int interval = 1;
+        int interval = 0;
 
         int currPage;
 
@@ -26,38 +26,9 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
         public bool InitDateInterval()
         {
-            //if (webClient.init)
-            //{
-            //    webClient.SetForFirstGame();
+            currDay = 100; // manually, because lichess returns list of games in unsorted order.
 
-            //    string bruto = string.Empty;
-
-            //    bool succeed = false;
-
-            //    do
-            //    {
-            //        try
-            //        {
-            //            bruto = webClient.GetResponse();
-            //            succeed = true;
-            //        }
-            //        catch (Exception exc)
-            //        {
-            //            Thread.Sleep(1000);
-            //        }
-            //    }
-            //    while (!succeed);
-
-
-            //    if (string.IsNullOrEmpty(bruto)) return false;
-
-            //    currDay = parser.GetCountDaysFromFirst(bruto);
-
-            //    if (currDay <= 0) return false;
-
-            currDay = 180; // manually, because lichess returns list of games in unsorted order.
-
-            interval = 14; // 2 weeks
+            interval = 1; // interval in days
 
             return true;
             //}
@@ -78,38 +49,32 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
             int count = 0;
 
+            string dateMax = (currDay - interval) > 0 ? (currDay - interval).ToString() : string.Empty;
+
+            webClient.SetParams(Tuple.Create("dateMin", currDay.ToString() + "d"), Tuple.Create("dateMax", dateMax + "d"));
+
+            string bruto = string.Empty;
+
+            bool succeed = false;
+
             do
             {
-                string dateMax = (currDay - interval) > 0 ? (currDay - interval).ToString() : string.Empty;
-
-                webClient.SetParams(Tuple.Create("dateMin", currDay.ToString() + "d"), Tuple.Create("dateMax", dateMax + "d"));
-
-                string bruto = string.Empty;
-
-                bool succeed = false;
-
-                do
+                try
                 {
-                    try
-                    {
-                        bruto = webClient.GetResponse();
-                        succeed = true;
-                    }
-                    catch (Exception exc)
-                    {
-                        Thread.Sleep(1000);
-                    }
+                    bruto = webClient.GetResponse();
+                    succeed = true;
                 }
-                while (!succeed);
-
-
-                count = parser.GetCountGamesFromBruto(ref bruto);
-
-                if (count > 350) interval = (int)Math.Floor((double)((interval * 351) / count));
-
-                if (interval < 1) interval = 1;
+                catch (Exception exc)
+                {
+                    Thread.Sleep(1000);
+                }
             }
-            while (count > 350);
+            while (!succeed);
+
+            count = parser.GetCountGamesFromBruto(ref bruto);
+
+
+
 
             currDay -= interval; // движемся от n до 0
             if (currDay < 0) currDay = 0;
@@ -127,6 +92,29 @@ namespace Chess.Atomic.Crawling.ParsingClasses
         public bool NextPage()
         {
             if (currPage > 39) return false;
+
+            string bruto = string.Empty;
+
+            bool succeed = false;
+
+            do
+            {
+                try
+                {
+                    bruto = webClient.GetResponse();
+                    succeed = true;
+                }
+                catch (Exception exc)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+            while (!succeed);
+
+            int count = parser.GetCountGamesFromBruto(ref bruto);
+
+            if (count <= 0) return false;
+
 
             webClient.SetPage(currPage++);
 

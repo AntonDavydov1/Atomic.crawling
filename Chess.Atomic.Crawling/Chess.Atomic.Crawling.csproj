@@ -226,6 +226,7 @@
     <Content Include="Views\GameMoves\Hints.cshtml" />
     <Content Include="Views\GameMoves\Crawling.cshtml" />
     <Content Include="Views\Start\Index.cshtml" />
+    <Content Include="Views\GameMoves\Hintsold.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

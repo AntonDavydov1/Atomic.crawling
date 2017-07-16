@@ -182,11 +182,6 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
         const string StatusLabel = "<div class=\"status\">";
         
-        //const string sep1 = "<div id=\"chat\" class=\"side_box\"></div>";
-        //const string sep2 = "";
-
-        
-
         private void AddPlayerIfNotExists(string name, PlayersController plController)
         {
             Player player = new Player();
