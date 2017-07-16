@@ -15,7 +15,7 @@ namespace Chess.Atomic.Crawling.SignalR_hubs
             //GlobalHost.ConnectionManager.
 
                 //Clients.All.Update(progress, playerName);
-            Chess.Atomic.Crawling.ParsingClasses.Crawling.Instance.ParseOnePlayer(playerName);
+            //Chess.Atomic.Crawling.ParsingClasses.Crawling.Instance.ParseOnePlayer(playerName);
         }
     }
 }

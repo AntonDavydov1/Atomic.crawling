@@ -157,23 +157,24 @@
     <Compile Include="Migrations\201707131520192_Add_GameShorts.Designer.cs">
       <DependentUpon>201707131520192_Add_GameShorts.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\GameShort.cs" />
-    <Compile Include="Models\PlayersController.cs" />
-    <Compile Include="Controllers\StartController.cs" />
+    <Compile Include="Models\old\GameShort.cs" />
+    <Compile Include="Models\old\PlayersController.cs" />
+    <Compile Include="Controllers\old\StartController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\ChessAtomicCrawlingContext.cs" />
-    <Compile Include="Models\AtomicGameInfo.cs" />
+    <Compile Include="Models\dbContext\ChessAtomicCrawlingContext.cs" />
+    <Compile Include="Models\old\AtomicGameInfo.cs" />
     <Compile Include="Models\Player.cs" />
-    <Compile Include="Models\UpdatesInfo.cs" />
+    <Compile Include="Models\old\UpdatesInfo.cs" />
     <Compile Include="Models\ViewModels\HintModel.cs" />
     <Compile Include="Models\ViewModels\StatisticsModel.cs" />
     <Compile Include="Models\ViewModels\WathcModel.cs" />
-    <Compile Include="ParsingClasses\AtomicParser.cs" />
-    <Compile Include="ParsingClasses\Crawling.cs" />
-    <Compile Include="ParsingClasses\SelectionHandler.cs" />
+    <Compile Include="ParsingClasses\MainResult.cs" />
+    <Compile Include="ParsingClasses\Old\AtomicParser.cs" />
+    <Compile Include="ParsingClasses\Old\Crawling.cs" />
+    <Compile Include="ParsingClasses\Old\SelectionHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SignalR_hubs\ProgressHub.cs" />
     <Compile Include="Startup.cs">

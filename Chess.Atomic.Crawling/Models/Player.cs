@@ -9,13 +9,13 @@ namespace Chess.Atomic.Crawling.Models
     public class Player
     {
         [Key]
-        public string name { get; set; }
+        public string id { get; set; }
 
         public int raiting { get; set; }
 
-        public int localCount { get; set; }
+        //public int localCount { get; set; }
 
-        public int lichessCount { get; set; }
+        //public int lichessCount { get; set; }
 
     }
 }

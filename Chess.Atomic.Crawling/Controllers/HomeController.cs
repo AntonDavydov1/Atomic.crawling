@@ -18,15 +18,7 @@ namespace Chess.Atomic.Crawling.Controllers
             return View();
         }
 
-        public string ParsePlayerGameShorts(string playerId)
-        {
 
-            Chess.Atomic.Crawling.ParsingClasses.Crawling.ParsePlayerGameShorts(playerId);
-
-
-
-            return "Ok";
-        }
     }
 
 }
