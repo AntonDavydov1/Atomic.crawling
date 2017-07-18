@@ -157,6 +157,7 @@
     <Compile Include="Migrations\201707131520192_Add_GameShorts.Designer.cs">
       <DependentUpon>201707131520192_Add_GameShorts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\dbContext\Player.cs" />
     <Compile Include="Models\old\GameShort.cs" />
     <Compile Include="Models\old\PlayersController.cs" />
     <Compile Include="Controllers\old\StartController.cs" />
@@ -166,7 +167,6 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\dbContext\ChessAtomicCrawlingContext.cs" />
     <Compile Include="Models\old\AtomicGameInfo.cs" />
-    <Compile Include="Models\Player.cs" />
     <Compile Include="Models\old\UpdatesInfo.cs" />
     <Compile Include="Models\ViewModels\HintModel.cs" />
     <Compile Include="Models\ViewModels\StatisticsModel.cs" />
