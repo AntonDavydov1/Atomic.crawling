@@ -42,11 +42,11 @@ namespace Chess.Atomic.Crawling.ParsingClasses
 
     public class Players
     {
-        public Player white { get; set; }
-        public Player black { get; set; } 
+        public PlayerResult white { get; set; }
+        public PlayerResult black { get; set; } 
     }
 
-    public class Player
+    public class PlayerResult
     {
         public string userId { get; set; }
         public int raiting { get; set; }
