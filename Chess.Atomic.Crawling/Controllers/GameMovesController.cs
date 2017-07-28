@@ -65,7 +65,7 @@ namespace Chess.Atomic.Crawling.Controllers
             {
                 GameStatus res = string.Equals(winner, "white") ? GameStatus.WhiteVictorious : GameStatus.BlackVictorious;
 
-                var games = from b in context.AtomicGameInfoOld
+                var games = from b in context.AtomicGameInfoOlds
                             where b.status == res && b.moves.StartsWith(moves)
                             select b;
 

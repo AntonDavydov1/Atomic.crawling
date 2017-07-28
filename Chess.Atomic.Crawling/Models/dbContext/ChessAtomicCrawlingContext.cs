@@ -15,15 +15,21 @@ namespace Chess.Atomic.Crawling.Models
 
         //public DbSet<AtomicGameInfo> AtomicGameInfo { get; set; }
 
-        public DbSet<Player> Players { get; set; }
+        public DbSet<GameInfo> GameInfoes { get; set; }
 
         //public DbSet<UpdatesInfo> Updates { get; set; }
 
-        public DbSet<AtomicGameInfoOld> AtomicGameInfoOld { get; set; }
+        public DbSet<AtomicGameInfoOld> AtomicGameInfoOlds { get; set; }
 
         //public DbSet<GameShort> GameShorts { get; set; }
 
 
-    
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<GameInfo>().Property(p => p.timeCreated).HasColumnType("datetime2");
+        }
     }
 }

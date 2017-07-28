@@ -11,7 +11,6 @@ namespace Chess.Atomic.Crawling.Models
         [Key]
         public string playerName { get; set; }
 
-        [DataType(DataType.Date)]
-        public DateTime lastUpdate { get; set; }
+        public int countGames { get; set; }
     }
 }

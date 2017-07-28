@@ -11,8 +11,8 @@ namespace Chess.Atomic.Crawling.ParsingClasses
         public int maxPerPage { get; set; }
         public GameResult[] currentPageResults { get; set; }
         public int nbResults { get; set; }
-        public int previousPage { get; set; }
-        public int nextPage { get; set; }
+        public int? previousPage { get; set; }
+        public int? nextPage { get; set; }
         public int nbPages { get; set; }
     }
 
@@ -23,7 +23,7 @@ namespace Chess.Atomic.Crawling.ParsingClasses
         public string variant { get; set; }
         public string speed { get; set; }
         public string perf { get; set; }
-        public int createdAt { get; set; }
+        public long createdAt { get; set; }
         public int turns { get; set; }
         public string status { get; set; }
         public Clock clock { get; set; }
@@ -49,6 +49,6 @@ namespace Chess.Atomic.Crawling.ParsingClasses
     public class PlayerResult
     {
         public string userId { get; set; }
-        public int raiting { get; set; }
+        public int? rating { get; set; }
     }
 }

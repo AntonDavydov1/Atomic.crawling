@@ -18,6 +18,13 @@ namespace Chess.Atomic.Crawling.Controllers
             return View();
         }
 
+        public string Parse(string player)
+        {
+            Chess.Atomic.Crawling.ParsingClasses.Crawling.ParseOnePlayer(player);
+
+            return "Ok";
+        }
+
 
     }
 
