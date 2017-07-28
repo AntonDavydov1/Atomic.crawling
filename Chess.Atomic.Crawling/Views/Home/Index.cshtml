@@ -6,15 +6,13 @@
 }
 
 <div class="jumbotron">
-    @Html.TextBox("playerId", "Aragorn1")
+    
+    @Html.ActionLink("Start cheating:)", "Index", "GameMoves", null, new { @class = "btn btn-primary btn-lg" })
     </br>
-    @Html.ActionLink("Start crawling", "Crawling", "GameMoves", new { playerId = "penguingim1" }, new { @class = "btn btn-primary btn-lg" })
-    </br>
-    @Ajax.
+    
    
 </div>
 
-@*@Html.TextArea("answer", (Model == null) ? "answer will be here ..." : Model.responseBody, new { @class = "fullwidth resizable", rows = "5" })*@
 
 @if (Model != null && Model.Count > 0)
 {

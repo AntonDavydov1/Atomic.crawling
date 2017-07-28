@@ -17,6 +17,38 @@ namespace Chess.Atomic.Crawling.Controllers
 {
     public class GameMovesController : Controller
     {
+
+        public ActionResult Index()
+        {
+            return View(); 
+        }
+
+        [HttpPost]
+        public ActionResult ShowBoard()
+        {
+            
+            return PartialView();
+        }
+
+        [HttpPost]
+        public JsonResult JsonBoard()
+        {
+            var jsondata = new int[] { 
+                2, 2, 2, 2, 2, 2, 2, 2,
+                2, 2, 2, 2, 2, 2, 2, 2,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1,
+            };
+            var res = Json(jsondata, JsonRequestBehavior.AllowGet);
+
+            return res;
+        }
+
+
         //public ActionResult Hint([Bind(Include = "moves,winner")]string moves, string winner)
         //{
         //    HintModel hints = new HintModel();
