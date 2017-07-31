@@ -197,7 +197,18 @@
     <Compile Include="Migrations\201707181257380_nullablerating.Designer.cs">
       <DependentUpon>201707181257380_nullablerating.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201707311025268_AddChessAtomicCrawlingOld.cs" />
+    <Compile Include="Migrations\201707311025268_AddChessAtomicCrawlingOld.Designer.cs">
+      <DependentUpon>201707311025268_AddChessAtomicCrawlingOld.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\dbContext\ChessAtomicCrawlingContextOld.cs" />
     <Compile Include="Models\dbContext\Player.cs" />
+    <Compile Include="Models\GameData.cs" />
+    <Compile Include="Models\GraphicsEngine.cs" />
+    <Compile Include="Models\HintsEngine.cs" />
+    <Compile Include="Models\MainEngine.cs" />
+    <Compile Include="Models\Move.cs" />
+    <Compile Include="Models\MovesEngine.cs" />
     <Compile Include="Models\old\GameShort.cs" />
     <Compile Include="Models\old\PlayersController.cs" />
     <Compile Include="Controllers\old\StartController.cs" />
@@ -329,6 +340,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707181257380_nullablerating.resx">
       <DependentUpon>201707181257380_nullablerating.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707311025268_AddChessAtomicCrawlingOld.resx">
+      <DependentUpon>201707311025268_AddChessAtomicCrawlingOld.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -12,6 +12,7 @@ using System.Threading;
 using Chess.Atomic.Crawling.Models.ViewModels;
 using System.Diagnostics;
 using Chess.Atomic.Crawling.WebClasses;
+using System.Threading.Tasks;
 
 namespace Chess.Atomic.Crawling.Controllers
 {
@@ -23,26 +24,42 @@ namespace Chess.Atomic.Crawling.Controllers
             return View(); 
         }
 
-        [HttpPost]
-        public ActionResult ShowBoard()
+
+
+        
+        public async Task<EmptyResult> PlayWhite()
         {
-            
-            return PartialView();
+            GameData.Instance.curMoves = string.Empty;
+            GameData.Instance.winner = "white";
+            GameData.Instance.whiteToPlay = true;
+
+            await MainEngine.Go();
+
+            return new EmptyResult();
         }
 
-        [HttpPost]
-        public JsonResult JsonBoard()
+        
+        public async Task<EmptyResult> PlayBlack()
         {
-            var jsondata = new int[] { 
-                2, 2, 2, 2, 2, 2, 2, 2,
-                2, 2, 2, 2, 2, 2, 2, 2,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                1, 1, 1, 1, 1, 1, 1, 1,
-                1, 1, 1, 1, 1, 1, 1, 1,
-            };
+            GameData.Instance.curMoves = string.Empty;
+            GameData.Instance.winner = "black";
+            GameData.Instance.whiteToPlay = true;
+
+
+
+            return new EmptyResult();
+        }
+
+
+
+        [HttpPost]
+        public JsonResult ShowBoard()
+        {
+
+
+
+            var jsondata = GameData.Instance;
+            
             var res = Json(jsondata, JsonRequestBehavior.AllowGet);
 
             return res;
@@ -87,38 +104,11 @@ namespace Chess.Atomic.Crawling.Controllers
 
         public ActionResult HintOld([Bind(Include = "moves,winner")]string moves, string winner)
         {
-            HintModel hints = new HintModel();
-
-            hints.currMoves = moves;
-
-            hints.winner = winner;
-
-            using (var context = new ChessAtomicCrawlingContext())
-            {
-                GameStatus res = string.Equals(winner, "white") ? GameStatus.WhiteVictorious : GameStatus.BlackVictorious;
-
-                var games = from b in context.AtomicGameInfoOlds
-                            where b.status == res && b.moves.StartsWith(moves)
-                            select b;
-
-                string nextMove = string.Empty;
-
-                int startIndex = moves.Length;
-
-                foreach (var g in games)
-                {
-                    if (g.moves.Length >= startIndex + 4)
-                    {
-                        nextMove = g.moves.Substring(startIndex, 4);
-
-                        if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
-                        else hints.hints.Add(nextMove, 1);
-                    }
-                }
-            }
+            HintModel hints = HintsEngine.FindHints(moves, winner);
 
 
             return View("~/Views/GameMoves/Hintsold.cshtml", hints);
         }
-    }
+
+            }
 }

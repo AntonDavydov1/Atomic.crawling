@@ -11,45 +11,45 @@
     <title>Index</title>
 </head>
 <body>
-    <script type="text/javascript">
-    function OnSuccess(data) {
-        //var results = $('#results'); // получаем нужный элемент
-        //results.empty(); //очищаем элемент
-        //for (var i = 0; i < data.length; i++) {
-        //    results.append('<li>' + data[i] + '</li>'); // добавляем данные в список
-        //}
-        var b_canvas = document.getElementById("board");
-        var b_context = b_canvas.getContext("2d");
-        
-        var x = 0;
-        var y = 0;
-
-
-        for (var i = 0; i < data.length; i++)
-        {
-            if (data[i] == 0) continue;
-            else if (data[i] == 1) b_context.fillStyle = "#EEEEEE";
-            else if (data[i] == 2) b_context.fillStyle = "#111111";
-
-            x = i % 8;
-            //y = parseInt(i / 8);
-
-            y = (i / 8 | 0);
-
-            b_context.fillRect(x * 64, y * 64, 64, 64);
-        }
-
-    }
-    </script>
-
     <div style="background-image: url(../../Images/brown512.png);"><canvas id="board" width="512" height="512"></canvas></div>
 
-    @using (Ajax.BeginForm("JsonBoard", new AjaxOptions { OnSuccess = "OnSuccess" }))
+    @using (Ajax.BeginForm("ShowBoard", new AjaxOptions { OnSuccess = "OnSuccess" }))
     {
         <input type="submit" value="Show board" />
     }
     <br />
     <div id="results"></div>
+
+    @Ajax.ActionLink("Play for white", "PlayWhite", null);
+
+    @Ajax.ActionLink("Play for black", "PlayBlack", null);
+
+    <script type="text/javascript">
+        function OnSuccess(data)
+        {
+            var b_canvas = document.getElementById("board");
+            var b_context = b_canvas.getContext("2d");
+
+            var x = 0;
+            var y = 0;
+
+
+            for (var i = 0; i < data.length; i++)
+            {
+                if (data[i] == 0) continue;
+                else if (data[i] == 1) b_context.fillStyle = "#EEEEEE";
+                else if (data[i] == 2) b_context.fillStyle = "#111111";
+
+                x = i % 8;
+                //y = parseInt(i / 8);
+
+                y = (i / 8 | 0);
+
+                b_context.fillRect(x * 64, y * 64, 64, 64);
+            }
+        }
+    </script>
+
 </body>
 
 </html>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Chess.Atomic.Crawling.Models.ViewModels
+namespace Chess.Atomic.Crawling.Models
 {
     public class HintModel
     {
