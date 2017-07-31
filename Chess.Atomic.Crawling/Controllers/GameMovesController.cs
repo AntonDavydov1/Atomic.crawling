@@ -45,7 +45,7 @@ namespace Chess.Atomic.Crawling.Controllers
             GameData.Instance.winner = "black";
             GameData.Instance.whiteToPlay = true;
 
-
+            await MainEngine.Go();
 
             return new EmptyResult();
         }

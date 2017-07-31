@@ -7,25 +7,38 @@ namespace Chess.Atomic.Crawling.Models
 {
     public class HintsEngine
     {
-        public static HintModel FindHints(string moves, string winner)
+        public static HintModel FindHints(string prevMoves, string winner)
         {
             HintModel hints = new HintModel();
 
-            hints.currMoves = moves;
+            hints.currMoves = prevMoves;
 
             hints.winner = winner;
 
             using (var context = new ChessAtomicCrawlingContextOld())
             {
-                GameStatus res = string.Equals(winner, "white") ? GameStatus.WhiteVictorious : GameStatus.BlackVictorious;
+                //GameStatus res = string.Equals(winner, "white") ? GameStatus.WhiteVictorious : GameStatus.BlackVictorious;
 
-                var games = from b in context.AtomicGameInfoOlds
-                            where b.status == res && b.moves.StartsWith(moves)
-                            select b;
 
+
+                //var games = from b in context.AtomicGameInfoOlds
+                //            where b.moves.StartsWith(moves)
+                //            select b;
+
+                IQueryable<AtomicGameInfoOld> games = null;
+
+                try
+                {
+                    games = context.AtomicGameInfoOlds.Where(g => g.moves.StartsWith(prevMoves));
+                }
+                catch (InvalidOperationException)
+                {
+                    return null;
+ 
+                }
                 string nextMove = string.Empty;
 
-                int startIndex = moves.Length;
+                int startIndex = prevMoves.Length;
 
                 foreach (var g in games)
                 {

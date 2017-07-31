@@ -25,20 +25,19 @@
     @Ajax.ActionLink("Play for black", "PlayBlack", null);
 
     <script type="text/javascript">
-        function OnSuccess(data)
-        {
+        function OnSuccess(data) {
             var b_canvas = document.getElementById("board");
+            b_canvas.width = 512;
             var b_context = b_canvas.getContext("2d");
 
             var x = 0;
             var y = 0;
 
 
-            for (var i = 0; i < data.length; i++)
-            {
-                if (data[i] == 0) continue;
-                else if (data[i] == 1) b_context.fillStyle = "#EEEEEE";
-                else if (data[i] == 2) b_context.fillStyle = "#111111";
+            for (var i = 0; i < data.curState.length; i++) {
+                if (data.curState[i] == 0) continue;
+                else if (data.curState[i] == 1) b_context.fillStyle = "#EEEEEE";
+                else if (data.curState[i] == 2) b_context.fillStyle = "#111111";
 
                 x = i % 8;
                 //y = parseInt(i / 8);
@@ -47,6 +46,11 @@
 
                 b_context.fillRect(x * 64, y * 64, 64, 64);
             }
+
+            b_context.fillStyle = "#0000AA";
+            b_context.fillRect((7 - data.curHint.moveFrom.x) * 64, data.curHint.moveFrom.y * 64, 64, 64);
+            b_context.fillRect((7 - data.curHint.moveTo.x) * 64, data.curHint.moveTo.y * 64, 64, 64);
+
         }
     </script>
 

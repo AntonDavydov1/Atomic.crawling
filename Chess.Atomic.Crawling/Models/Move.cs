@@ -99,6 +99,41 @@ namespace Chess.Atomic.Crawling.Models
             return res;
         }
 
+        public string ToBlack()
+        {
+            string res = String.Empty;
+
+            switch (moveFrom.x)
+            {
+                case 0: { res += "h"; break; }
+                case 1: { res += "g"; break; }
+                case 2: { res += "f"; break; }
+                case 3: { res += "e"; break; }
+                case 4: { res += "d"; break; }
+                case 5: { res += "c"; break; }
+                case 6: { res += "b"; break; }
+                case 7: { res += "a"; break; }
+            }
+
+            res += (moveFrom.y + 1).ToString();
+
+            switch (moveTo.x)
+            {
+                case 0: { res += "h"; break; }
+                case 1: { res += "g"; break; }
+                case 2: { res += "f"; break; }
+                case 3: { res += "e"; break; }
+                case 4: { res += "d"; break; }
+                case 5: { res += "c"; break; }
+                case 6: { res += "b"; break; }
+                case 7: { res += "a"; break; }
+            }
+
+            res += (moveTo.y + 1).ToString();
+
+            return res;
+        }
+
 
         
     }

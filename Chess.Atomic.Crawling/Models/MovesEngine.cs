@@ -9,13 +9,14 @@ namespace Chess.Atomic.Crawling.Models
     {
         public static void MakeMove(Move move)
         {
-            GameData.Instance.curMoves += move.ToWhite();
+            GameData.Instance.curMoves += String.Equals(GameData.Instance.winner, "white") ? move.ToWhite() : move.ToBlack();
 
             var res = HintsEngine.FindHints(GameData.Instance.curMoves, GameData.Instance.winner);
 
             var hint = res.hints.FirstOrDefault();
 
             if (hint.Key != null) GameData.Instance.curHint = Move.Parse(hint.Key);
+            else GameData.Instance.curHint = Move.Parse("h1a1");
  
         }
 

@@ -21,15 +21,10 @@ namespace Chess.Atomic.Crawling.Models
 
         public DbSet<AtomicGameInfoOld> AtomicGameInfoOlds { get; set; }
 
+        //public DbSet<AtomicGameInfoOld> AtomicGameInfoBackUp { get; set; }
         //public DbSet<GameShort> GameShorts { get; set; }
 
 
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<GameInfo>().Property(p => p.timeCreated).HasColumnType("datetime2");
-        }
     }
 }

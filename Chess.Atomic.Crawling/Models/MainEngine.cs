@@ -28,7 +28,7 @@ namespace Chess.Atomic.Crawling.Models
 
                 screen = GraphicsEngine.CaptureScreen();
 
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
 
                 GraphicsEngine.ScanBoard(screen, ref newState);
 
