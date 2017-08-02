@@ -11,6 +11,7 @@ namespace Chess.Atomic.Crawling.Models
     {
         public static Color PixelEmptyWhite = Color.FromArgb(255, 192, 220, 192);
         public static Color PixelEmptyBlack = Color.FromArgb(255, 192, 128, 128);
+        //public static Color PixelEmptyLastMove = 
         public static Color PixelWhite = Color.FromArgb(255, 255, 255, 255);
         public static Color PixelBlack = Color.FromArgb(255, 0, 0, 0);
 
@@ -43,7 +44,7 @@ namespace Chess.Atomic.Crawling.Models
             }
         }
 
-        public static void ScanBoard(Bitmap bmp, ref int[] board)
+        public static bool ScanBoard(Bitmap bmp, ref int[] board)
         {
             using (Graphics g = Graphics.FromImage(bmp))
             {
@@ -51,16 +52,36 @@ namespace Chess.Atomic.Crawling.Models
                 {
                     for (int h = 0; h < 8; ++h)
                     {
-                        var curPixel = bmp.GetPixel(h * size + 25, v * size + 33);
+                        var pix1 = bmp.GetPixel(h * size + 25, v * size + 33);
+                        var pix2 = bmp.GetPixel(h * size + 38, v * size + 33);
 
-                        //if (curPixel == PixelEmptyWhite || curPixel == PixelEmptyBlack) 
-                        board[v * 8 + h] = 0;
-                        if (curPixel == PixelWhite) board[v * 8 + h] = 1;
-                        if (curPixel == PixelBlack) board[v * 8 + h] = 2;
+                        board[v * 8 + h] = -1;
+                        if (pix1 == PixelWhite && pix2 == PixelWhite) board[v * 8 + h] = 1;
+                        if (pix1 == PixelBlack && pix2 == PixelBlack) board[v * 8 + h] = 2;
 
                     }
                 }
             }
+
+            return CheckBoard(board);
+        }
+
+        static bool CheckBoard(int[] board)
+        {
+            bool res = true;
+
+            int countWhite = 0;
+            int countBlack = 0;
+
+            for (int i = 0; i < board.Length; ++i)
+            {
+                if (board[i] == 1) ++countWhite;
+                if (board[i] == 2) ++countBlack;
+            }
+
+            if (countWhite > 16 || countBlack > 16) return false;
+
+            return res;
         }
     }
 }

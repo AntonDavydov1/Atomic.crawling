@@ -12,11 +12,22 @@ namespace Chess.Atomic.Crawling.Models
     {
         public static Task<bool> Go()
         {
-            Bitmap screen = GraphicsEngine.CaptureScreen();
+            Bitmap screen = null;
 
-            GraphicsEngine.ScanBoard(screen, ref GameData.Instance.curState);
+            //GraphicsEngine.ScanBoard(screen, ref GameData.Instance.curState);
 
-            int[] newState = new int[64];
+            int[] newState = new int[64] {
+                1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1, 1, 1, 1,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                2, 2, 2, 2, 2, 2, 2, 2,
+                2, 2, 2, 2, 2, 2, 2, 2,
+            };
+
+            
 
             Move lastMove = new Move();
 
@@ -24,44 +35,60 @@ namespace Chess.Atomic.Crawling.Models
 
             while (true)
             {
-                Thread.Sleep(100);
-
+                
                 screen = GraphicsEngine.CaptureScreen();
 
                 //Thread.Sleep(1000);
 
-                GraphicsEngine.ScanBoard(screen, ref newState);
-
-                if (GameData.Instance.whiteToPlay && MovesEngine.WhiteMoves(GameData.Instance.curState, newState, ref lastMove))
+                if (GraphicsEngine.ScanBoard(screen, ref newState))
                 {
-                    MovesEngine.MakeMove(lastMove);
 
-                    for (int i = 0; i < GameData.Instance.curState.Length; ++i)
+                    if (GameData.Instance.whiteToPlay && MovesEngine.WhiteMoves(GameData.Instance.curState, newState, ref lastMove))
                     {
-                        GameData.Instance.curState[i] = newState[i];
+                        MovesEngine.MakeMove(lastMove);
+
+                        for (int i = 0; i < GameData.Instance.curState.Length; ++i)
+                        {
+                            GameData.Instance.curState[i] = newState[i];
+                        }
+
+                        GameData.Instance.whiteToPlay = false;
+
+                        moves.Add(lastMove);
                     }
+                    else if (MovesEngine.BlackMoves(GameData.Instance.curState, newState, ref lastMove))
+                    {
+                        MovesEngine.MakeMove(lastMove);
 
-                    GameData.Instance.whiteToPlay = false;
+                        for (int i = 0; i < GameData.Instance.curState.Length; ++i)
+                        {
+                            GameData.Instance.curState[i] = newState[i];
+                        }
 
-                    moves.Add(lastMove);
+                        GameData.Instance.whiteToPlay = true;
+
+                        moves.Add(lastMove);
+                    }
                 }
-                else if (MovesEngine.BlackMoves(GameData.Instance.curState, newState, ref lastMove))
+
+                if (GameData.Instance.reset)
                 {
-                    MovesEngine.MakeMove(lastMove);
+                    GameData.Instance.Reset();
 
-                    for (int i = 0; i < GameData.Instance.curState.Length; ++i)
-                    {
-                        GameData.Instance.curState[i] = newState[i];
-                    }
-
-                    GameData.Instance.whiteToPlay = true;
-
-                    moves.Add(lastMove);
+                    return Task.FromResult(true);
                 }
+
+                Thread.Sleep(200);
+
             }
 
 
  
+        }
+
+        public static void Reset()
+        {
+            GameData.Instance.reset = true; ;
         }
     }
 }

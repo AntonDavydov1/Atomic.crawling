@@ -15,42 +15,23 @@ namespace Chess.Atomic.Crawling.Models
 
             hints.winner = winner;
 
-            using (var context = new ChessAtomicCrawlingContextOld())
+            IEnumerable<AtomicGameInfoOld> games = GameData.Instance.prevPlayedGames.Where(g => g.moves.StartsWith(prevMoves));
+
+            string nextMove = string.Empty;
+
+            int startIndex = prevMoves.Length;
+
+            foreach (var g in games)
             {
-                //GameStatus res = string.Equals(winner, "white") ? GameStatus.WhiteVictorious : GameStatus.BlackVictorious;
-
-
-
-                //var games = from b in context.AtomicGameInfoOlds
-                //            where b.moves.StartsWith(moves)
-                //            select b;
-
-                IQueryable<AtomicGameInfoOld> games = null;
-
-                try
+                if (g.moves.Length >= startIndex + 4)
                 {
-                    games = context.AtomicGameInfoOlds.Where(g => g.moves.StartsWith(prevMoves));
-                }
-                catch (InvalidOperationException)
-                {
-                    return null;
- 
-                }
-                string nextMove = string.Empty;
+                    nextMove = g.moves.Substring(startIndex, 4);
 
-                int startIndex = prevMoves.Length;
-
-                foreach (var g in games)
-                {
-                    if (g.moves.Length >= startIndex + 4)
-                    {
-                        nextMove = g.moves.Substring(startIndex, 4);
-
-                        if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
-                        else hints.hints.Add(nextMove, 1);
-                    }
+                    if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
+                    else hints.hints.Add(nextMove, 1);
                 }
             }
+
             return hints;
         }
 

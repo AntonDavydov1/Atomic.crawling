@@ -32,6 +32,7 @@ namespace Chess.Atomic.Crawling.Controllers
             GameData.Instance.curMoves = string.Empty;
             GameData.Instance.winner = "white";
             GameData.Instance.whiteToPlay = true;
+            GameData.Instance.reset = false;
 
             await MainEngine.Go();
 
@@ -44,8 +45,16 @@ namespace Chess.Atomic.Crawling.Controllers
             GameData.Instance.curMoves = string.Empty;
             GameData.Instance.winner = "black";
             GameData.Instance.whiteToPlay = true;
+            GameData.Instance.reset = false;
 
             await MainEngine.Go();
+
+            return new EmptyResult();
+        }
+
+        public EmptyResult Reset()
+        {
+            MainEngine.Reset();
 
             return new EmptyResult();
         }
@@ -55,10 +64,7 @@ namespace Chess.Atomic.Crawling.Controllers
         [HttpPost]
         public JsonResult ShowBoard()
         {
-
-
-
-            var jsondata = GameData.Instance;
+            var jsondata = new { curHint = GameData.Instance.curHint, curState = GameData.Instance.curState };
             
             var res = Json(jsondata, JsonRequestBehavior.AllowGet);
 

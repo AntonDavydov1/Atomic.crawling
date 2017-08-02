@@ -22,63 +22,29 @@ namespace Chess.Atomic.Crawling
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            //Chess.Atomic.Crawling.Controllers.PlayersController plController = new Controllers.PlayersController();
+            using(var context = new ChessAtomicCrawlingContextOld())
+            {
+                try
+                {
+                    GameData.Instance.prevPlayedGames = context.AtomicGameInfoOlds.ToList();
+                }
+                catch (System.Data.DataException e)
+                { 
+                }
 
+                List<AtomicGameInfoOld> sameMoves = null;
 
-            //try
-            //{
-            //    plController.db.Updates.Add(new UpdatesInfo { playerName = "time", lastUpdate = DateTime.Now });
-            //    plController.db.SaveChanges();
-            //}
-            //catch(Exception exc){}
+                foreach (var g in GameData.Instance.prevPlayedGames)
+                {
+                    sameMoves = GameData.Instance.prevPlayedGames.Where(game => String.Equals(game.moves, g.moves)).ToList();
 
+                    sameMoves.Remove(g);
+                    if (sameMoves.Count > 0) context.AtomicGameInfoOlds.RemoveRange(sameMoves);
+                    
+                }
 
-
-            //var allPlayers = (from pl in plController.db.Players
-            //               select pl.name)
-            //               .ToList();
-
-            //foreach (var pl in allPlayers)
-            //{
-            //    UpdatesInfo player = plController.db.Updates.First(a => a.playerName == pl);
-
-            //    if (player == null) continue;
-
-            //    if ((DateTime.Now - player.lastUpdate).Days >= 1)
-            //    {
- 
-            //    }
-            //}
-
-            //try
-            //{
-
-            //    DateTime now = DateTime.Now;
-
-            //    var plNeedsToCrawling = (from upd in plController.db.Updates
-            //                             where (now - upd.lastUpdate).Days > 1
-            //                             select upd.playerName)
-            //                            .ToList();
-
-            //}
-            //catch (Exception ec)
-            //{ }
-            //var updates = plController.db.Updates.ToList();
-
-
-
-            //var date = updates[0].lastUpdate;
-
-            //AtomicParser parser = new AtomicParser();
-
-            //var players = plController.GetPlayers();
-
-            //foreach (var player in players)
-            //{
-            //    player.raiting = parser.GetPlayerRaiting(player.name);
-
-            //    plController.Edit(player);
-            //}
+                context.SaveChanges();
+            }
         }
     }
 }
