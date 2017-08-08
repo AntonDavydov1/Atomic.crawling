@@ -72,6 +72,8 @@ namespace Chess.Atomic.Crawling.Models
 
                         GameData.Instance.whiteToPlay = false;
 
+                        newMove.castling = false;
+
                         ConnectionBoard.Instance.UpdateBoard();
                     }
                     else if (MovesEngine.BlackMoves(GameData.Instance.curState, GameData.Instance.lastMove, highlighted, ref newMove))
@@ -89,6 +91,8 @@ namespace Chess.Atomic.Crawling.Models
                         GameData.Instance.lastMove.moveTo.y = newMove.moveTo.y;
 
                         GameData.Instance.whiteToPlay = true;
+
+                        newMove.castling = false;
 
                         ConnectionBoard.Instance.UpdateBoard();
                     }

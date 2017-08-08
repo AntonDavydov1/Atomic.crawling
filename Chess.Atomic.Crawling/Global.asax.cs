@@ -22,15 +22,15 @@ namespace Chess.Atomic.Crawling
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            using(var context = new ChessAtomicCrawlingContextOld())
-            {
-                try
-                {
-                    GameData.Instance.prevPlayedGames = context.AtomicGameInfoOlds.ToList();
-                }
-                catch (System.Data.DataException e)
-                { 
-                }
+            //using(var context = new ChessAtomicCrawlingContextOld())
+            //{
+            //    try
+            //    {
+            //        GameData.Instance.prevPlayedGames = context.AtomicGameInfoOlds.ToList();
+            //    }
+            //    catch (System.Data.DataException e)
+            //    { 
+            //    }
 
             //    List<AtomicGameInfoOld> sameMoves = null;
 
@@ -44,7 +44,7 @@ namespace Chess.Atomic.Crawling
             //    }
 
             //    context.SaveChanges();
-            }
+            //}
         }
     }
 }

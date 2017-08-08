@@ -25,7 +25,7 @@ namespace Chess.Atomic.Crawling.Models
 
         private string[] AdditionalHints = new string[] { 
 
-            "g1f3f7f6" + "e2e3e7e6" + "f3d4c7c6" + "b1c3f8b4" + "d4b5g8h6" + "g2g4", // rokirovka
+            "g1f3f7f6" + "e2e3e7e6" + "f3d4c7c6" + "b1c3f8b4" + "d4b5g8h6" + "g2g4xxOO" + "b5a7f6f5" + "h2h4e6e5" + "f2f3f5g4" + "f1h3h6g4" + "xxOOd8f6" + "c3e4b4d2" + "e4g5h7h5" + "g5e6f6e6" + "f3f4d7d5" + "h3g4c8h3",
             "g1f3f7f6" + "e2e3e7e6" + "f3d4c7c6" + "b1c3f8b4" + "d4b5g8h6" + "h2h3e6e5",
             "g1f3f7f6" + "e2e3e7e6" + "f3d4c7c6" + "b1c3f8b4" + "d4b5g8h6" + "b5c7e8f8",
 
@@ -63,7 +63,10 @@ namespace Chess.Atomic.Crawling.Models
 
             "g1h3h7h6" + "e2e3e7e6" + "b1c3f8b4" + "f1b5c7c6" + "d1h5g7g6" + "h5e5d8h4" + "g2g3h4f4" + "f2f3f4e5",
             "g1h3h7h6" + "e2e3e7e6" + "b1c3f8b4" + "d1h5g7g6" + "f1b5c7c6" + "h5e5d8h4" + "g2g3h4f4" + "f2f3f4e5",
-            "g1h3h7h6" + "e2e3e7e6" + "h3f4b8c6" + "d1h5g7g6" + "h5h4d8h4" + "f1b5g8f6" + "f4e6f8g7" + "b1c3OO",// rokirovka
+            
+            "g1h3h7h6" + "e2e3e7e6" + "b1a3d8h4" + "g2g3h4g4" + "f2f3g4b4" + "c2c3b4b2" + "",
+            
+            "g1h3h7h6" + "e2e3e7e6" + "h3f4b8c6" + "d1h5g7g6" + "h5h4d8h4" + "f1b5g8f6" + "f4e6f8g7" + "b1c3xxOO",
             "g1h3h7h6" + "e2e3e7e6" + "h3f4b8c6" + "d1h5g7g6" + "h5h4d8h4" + "f4d5g8f6",
             "g1h3h7h6" + "e2e3e7e6" + "h3f4b8c6" + "f4h5f8b4" + "c2c3c6d4" + "e3d4d8h4",
             "g1h3h7h6" + "e2e3e7e6" + "h3f4b8c6" + "f4h5f8b4" + "c2c3c6d4" + "d1f3d4f3",
@@ -90,6 +93,7 @@ namespace Chess.Atomic.Crawling.Models
             "e2e3e7e6" + "g1f3d8f6" + "f1d3f8b4" + "c2c3b4c3" + "d1a4b7b5" + "a4d4d7d6" + "e1d1e8d8" + "f3g5c7c5" + "g5f7c5d4" + "b1c3c8b7" + "e3e4g7g5" + "d2d3b8d7" + "f2f4h8f8" + "h1f1d7c5" + "f4g5f8f2" + "f1f2c5b3" + "c1g5d8e8" + "a1b1a8c8" + "d1e1b3c1" + "a2a4d6d5" + "g5e7e8d7" + "a4a5c1d3" + "e7c5d5e4" + "",
             //"e2e3e7e6" + "g1f3d8f6" + "f1d3f8b4" + "c2c3b4c3" + "d1a4b7b5" + "a4d4d7d6" + "e1d1e8d8" + "f3g5c7c5" + "g5f7c5d4" + "b1c3c8b7" + "e3e4g7g5" + "d2d4",
 
+            "e2e3e7e6" + "d1h5g7g6" + "g1f3d8h4" + "g2g3h4b4" + "c2c3f7f6"
 
         };
 
@@ -115,21 +119,21 @@ namespace Chess.Atomic.Crawling.Models
                 else hints.hints.Add(nextMove, 1);
             }
 
-            if (hints.hints.Count == 0)
-            {
-                IEnumerable<AtomicGameInfoOld> games = GameData.Instance.prevPlayedGames.Where(g => g.moves.StartsWith(prevMoves));
+            //if (hints.hints.Count == 0)
+            //{
+            //    IEnumerable<AtomicGameInfoOld> games = GameData.Instance.prevPlayedGames.Where(g => g.moves.StartsWith(prevMoves));
 
-                foreach (var g in games)
-                {
-                    if (g.moves.Length >= startIndex + 4)
-                    {
-                        nextMove = g.moves.Substring(startIndex, 4);
+            //    foreach (var g in games)
+            //    {
+            //        if (g.moves.Length >= startIndex + 4)
+            //        {
+            //            nextMove = g.moves.Substring(startIndex, 4);
 
-                        if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
-                        else hints.hints.Add(nextMove, 1);
-                    }
-                }
-            }
+            //            if (hints.hints.ContainsKey(nextMove)) ++hints.hints[nextMove];
+            //            else hints.hints.Add(nextMove, 1);
+            //        }
+            //    }
+            //}
             
 
             return hints;

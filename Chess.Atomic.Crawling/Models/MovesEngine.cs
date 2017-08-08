@@ -32,10 +32,14 @@ namespace Chess.Atomic.Crawling.Models
         {
             if (curPos.Length != 64) throw new Exception();
 
-            if (lastMove.moveFrom.x != highlighted.moveFrom.x && lastMove.moveTo.y != highlighted.moveTo.y)
+            if (lastMove.moveFrom == highlighted.moveFrom && lastMove.moveTo == highlighted.moveTo ||
+                lastMove.moveFrom == highlighted.moveTo && lastMove.moveTo == highlighted.moveFrom
+                )
+                return false;
+            else
             {
-                int indFrom = highlighted.moveFrom.x * 8 + highlighted.moveFrom.y;
-                int indTo = highlighted.moveTo.x * 8 + highlighted.moveTo.y;
+                int indFrom = highlighted.moveFrom.y * 8 + highlighted.moveFrom.x;
+                int indTo = highlighted.moveTo.y * 8 + highlighted.moveTo.x;
 
                 if (curPos[indFrom] == (int)SquareState.white && curPos[indTo] == (int)SquareState.white)
                 {
@@ -116,10 +120,14 @@ namespace Chess.Atomic.Crawling.Models
         {
             if (curPos.Length != 64) throw new Exception();
 
-            if (lastMove.moveFrom.x != highlighted.moveFrom.x && lastMove.moveTo.y != highlighted.moveTo.y)
+            if (lastMove.moveFrom == highlighted.moveFrom && lastMove.moveTo == highlighted.moveTo ||
+                lastMove.moveFrom == highlighted.moveTo && lastMove.moveTo == highlighted.moveFrom
+                )
+                return false;
+            else
             {
-                int indFrom = highlighted.moveFrom.x * 8 + highlighted.moveFrom.y;
-                int indTo = highlighted.moveTo.x * 8 + highlighted.moveTo.y;
+                int indFrom = highlighted.moveFrom.y * 8 + highlighted.moveFrom.x;
+                int indTo = highlighted.moveTo.y * 8 + highlighted.moveTo.x;
 
 
                 if (curPos[indFrom] == (int)SquareState.black && curPos[indTo] == (int)SquareState.black)

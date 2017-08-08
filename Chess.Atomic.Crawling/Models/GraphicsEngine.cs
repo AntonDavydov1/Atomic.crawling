@@ -26,18 +26,6 @@ namespace Chess.Atomic.Crawling.Models
                 using (Graphics g = Graphics.FromImage(bmpScreenCapture))
                 {
                     g.CopyFromScreen(223, 178, 0, 0, bmpScreenCapture.Size, CopyPixelOperation.SourceCopy);
-
-                    //// Create pen.
-                    //Pen blackPen = new Pen(Color.Black, 3);
-
-                    //// Create points that define line.
-                    //Point point1 = new Point(100, 100);
-                    //Point point2 = new Point(500, 100);
-
-                    //// Draw line to screen.
-                    //g.DrawLine(blackPen, point1, point2);
-
-                    bmpScreenCapture.Save("experiment1.png", ImageFormat.Png);
                 }
 
                 
@@ -65,15 +53,15 @@ namespace Chess.Atomic.Crawling.Models
                         {
                             if (firstLastMove)
                             {
-                                highlighted.moveFrom.x = v;
-                                highlighted.moveFrom.y = h;
+                                highlighted.moveFrom.x = h;
+                                highlighted.moveFrom.y = v;
 
                                 firstLastMove = false;
                             }
                             else
                             {
-                                highlighted.moveTo.x = v;
-                                highlighted.moveTo.y = h;
+                                highlighted.moveTo.x = h;
+                                highlighted.moveTo.y = v;
                             }
                         }
                         if (pix1 == PixelWhite && pix2 == PixelWhite) board[v * 8 + h] = (int)SquareState.white;

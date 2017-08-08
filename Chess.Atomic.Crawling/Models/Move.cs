@@ -73,7 +73,7 @@ namespace Chess.Atomic.Crawling.Models
 
             if (String.Equals(move, "xxOO"))
             {
-                if (GameData.Instance.whiteToPlay)
+                if (!GameData.Instance.whiteToPlay)
                 {
                     res.moveFrom.x = 3;
                     res.moveFrom.y = 0;
@@ -92,10 +92,9 @@ namespace Chess.Atomic.Crawling.Models
 
                 res.castling = true;
             }
-
-            if (String.Equals(move, "xOOO"))
+            else if (String.Equals(move, "xOOO"))
             {
-                if (GameData.Instance.whiteToPlay)
+                if (!GameData.Instance.whiteToPlay)
                 {
                     res.moveFrom.x = 3;
                     res.moveFrom.y = 0;
@@ -114,43 +113,44 @@ namespace Chess.Atomic.Crawling.Models
 
                 res.castling = true;
             }
-
-
-            string symb = move.Substring(0, 1);
-
-            switch (symb)
+            else
             {
-                case "h": { res.moveFrom.x = 0; break; }
-                case "g": { res.moveFrom.x = 1; break; }
-                case "f": { res.moveFrom.x = 2; break; }
-                case "e": { res.moveFrom.x = 3; break; }
-                case "d": { res.moveFrom.x = 4; break; }
-                case "c": { res.moveFrom.x = 5; break; }
-                case "b": { res.moveFrom.x = 6; break; }
-                case "a": { res.moveFrom.x = 7; break; }
+                string symb = move.Substring(0, 1);
+
+                switch (symb)
+                {
+                    case "h": { res.moveFrom.x = 0; break; }
+                    case "g": { res.moveFrom.x = 1; break; }
+                    case "f": { res.moveFrom.x = 2; break; }
+                    case "e": { res.moveFrom.x = 3; break; }
+                    case "d": { res.moveFrom.x = 4; break; }
+                    case "c": { res.moveFrom.x = 5; break; }
+                    case "b": { res.moveFrom.x = 6; break; }
+                    case "a": { res.moveFrom.x = 7; break; }
+                }
+
+                int second = Int32.Parse(move.Substring(1, 1));
+
+                res.moveFrom.y = second - 1;
+
+                symb = move.Substring(2, 1);
+
+                switch (symb)
+                {
+                    case "h": { res.moveTo.x = 0; break; }
+                    case "g": { res.moveTo.x = 1; break; }
+                    case "f": { res.moveTo.x = 2; break; }
+                    case "e": { res.moveTo.x = 3; break; }
+                    case "d": { res.moveTo.x = 4; break; }
+                    case "c": { res.moveTo.x = 5; break; }
+                    case "b": { res.moveTo.x = 6; break; }
+                    case "a": { res.moveTo.x = 7; break; }
+                }
+
+                second = Int32.Parse(move.Substring(3, 1));
+
+                res.moveTo.y = second - 1;
             }
-
-            int second = Int32.Parse(move.Substring(1, 1));
-
-            res.moveFrom.y = second - 1;
-
-            symb = move.Substring(2, 1);
-
-            switch (symb)
-            {
-                case "h": { res.moveTo.x = 0; break; }
-                case "g": { res.moveTo.x = 1; break; }
-                case "f": { res.moveTo.x = 2; break; }
-                case "e": { res.moveTo.x = 3; break; }
-                case "d": { res.moveTo.x = 4; break; }
-                case "c": { res.moveTo.x = 5; break; }
-                case "b": { res.moveTo.x = 6; break; }
-                case "a": { res.moveTo.x = 7; break; }
-            }
-
-            second = Int32.Parse(move.Substring(3, 1));
-
-            res.moveTo.y = second - 1;
 
             return res;
         }
@@ -207,6 +207,18 @@ namespace Chess.Atomic.Crawling.Models
                         res = "xOOO";
                     }
                 }
+                else
+                {
+                    if (moveTo.x == 0 && moveTo.y == 7)
+                    {
+                        res = "xxOO";
+                    }
+                    if (moveTo.x == 7 && moveTo.y == 7)
+                    {
+                        res = "xOOO";
+                    }
+ 
+                }
             }
             else
             {
@@ -252,5 +264,15 @@ namespace Chess.Atomic.Crawling.Models
         public int x { get; set; }
 
         public int y { get; set; }
+
+        public static bool operator ==(Point p1, Point p2)
+        {
+            return (p1.x == p2.x && p1.y == p2.y); 
+        }
+
+        public static bool operator !=(Point p1, Point p2)
+        {
+            return (p1.x != p2.x || p1.y != p2.y);
+        }
     }
 }
