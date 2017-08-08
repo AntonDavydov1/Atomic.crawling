@@ -11,7 +11,7 @@
     <title>Index</title>
 </head>
 <body>
-    <div style="background-image: url(../../Images/brown512.png);"><canvas id="board" width="512" height="512"></canvas></div>
+    <div style="background-image: url(../../Images/brown512.png); background-size: cover; width:256px; height: 256px"><canvas id="board" width="256" height="256"></canvas></div>
 
     @using (Ajax.BeginForm("ShowBoard", new AjaxOptions { OnSuccess = "OnSuccess" }))
     {
@@ -20,16 +20,21 @@
     <br />
     <div id="results"></div>
 
-    @Ajax.ActionLink("Play for white", "PlayWhite", null);
+    @*@Ajax.ActionLink("Play for white", "PlayWhite", null);*@
 
     @Ajax.ActionLink("New game for black", "PlayBlack", null);
 
-    @Ajax.ActionLink("Reset", "Reset", null);
+    @Ajax.ActionLink("Stop", "Reset", null);
 
     <script type="text/javascript">
         function OnSuccess(data) {
+            
+            UpdateBoard(data);
+        }
+
+        function UpdateBoard(data) {
             var b_canvas = document.getElementById("board");
-            b_canvas.width = 512;
+            b_canvas.width = 256;
             var b_context = b_canvas.getContext("2d");
 
             var x = 0;
@@ -37,7 +42,7 @@
 
 
             for (var i = 0; i < data.curState.length; i++) {
-                if (data.curState[i] == 0) continue;
+                if (data.curState[i] == -1) continue;
                 else if (data.curState[i] == 1) b_context.fillStyle = "#EEEEEE";
                 else if (data.curState[i] == 2) b_context.fillStyle = "#111111";
 
@@ -46,12 +51,12 @@
 
                 y = (i / 8 | 0);
 
-                b_context.fillRect(x * 64, y * 64, 64, 64);
+                b_context.fillRect(x * 32, y * 32, 32, 32);
             }
 
             b_context.fillStyle = "#0000AA";
-            b_context.fillRect((7 - data.curHint.moveFrom.x) * 64, data.curHint.moveFrom.y * 64, 64, 64);
-            b_context.fillRect((7 - data.curHint.moveTo.x) * 64, data.curHint.moveTo.y * 64, 64, 64);
+            b_context.fillRect((7 - data.curHint.moveFrom.x) * 32, data.curHint.moveFrom.y * 32, 32, 32);
+            b_context.fillRect((7 - data.curHint.moveTo.x) * 32, data.curHint.moveTo.y * 32, 32, 32);
 
         }
     </script>
@@ -59,3 +64,9 @@
 </body>
 
 </html>
+
+@section Scripts{
+    @Scripts.Render("~/Scripts/jquery.signalR-2.2.2.js")
+    @Scripts.Render("~/signalr/hubs")
+    @Scripts.Render("~/Scripts/SignalR/board.js")
+}

@@ -11,6 +11,8 @@ namespace Chess.Atomic.Crawling.Models
 
         public Point moveTo;
 
+        public bool castling; // xxOO - short, xOOO - long
+
         //public Move()
         //{
         //    moveFrom = new Point();
@@ -18,12 +20,11 @@ namespace Chess.Atomic.Crawling.Models
         //    moveTo = new Point();
         //}
 
-        public static Move Parse(string move)
+        public static Move ParseWhite(string move) // TODO : add castling processing
         {
             Move res = new Move();
             
             if (move.Length != 4) throw new Exception();
-
 
             string symb = move.Substring(0, 1);
 
@@ -41,7 +42,7 @@ namespace Chess.Atomic.Crawling.Models
 
             int second = Int32.Parse(move.Substring(1, 1));
 
-            res.moveFrom.y = second - 1;
+            res.moveFrom.y = second - 1; // incorrect
 
             symb = move.Substring(2, 1);
 
@@ -59,12 +60,102 @@ namespace Chess.Atomic.Crawling.Models
 
             second = Int32.Parse(move.Substring(3, 1));
 
+            res.moveTo.y = second - 1; // incorrect, 7 - second ???
+
+            return res;
+        }
+
+        public static Move ParseBlack(string move)
+        {
+            Move res = new Move();
+
+            if (move.Length != 4) throw new Exception();
+
+            if (String.Equals(move, "xxOO"))
+            {
+                if (GameData.Instance.whiteToPlay)
+                {
+                    res.moveFrom.x = 3;
+                    res.moveFrom.y = 0;
+
+                    res.moveTo.x = 0;
+                    res.moveTo.y = 0;
+                }
+                else
+                {
+                    res.moveFrom.x = 3;
+                    res.moveFrom.y = 7;
+
+                    res.moveTo.x = 0;
+                    res.moveTo.y = 7;
+                }
+
+                res.castling = true;
+            }
+
+            if (String.Equals(move, "xOOO"))
+            {
+                if (GameData.Instance.whiteToPlay)
+                {
+                    res.moveFrom.x = 3;
+                    res.moveFrom.y = 0;
+
+                    res.moveTo.x = 7;
+                    res.moveTo.y = 0;
+                }
+                else
+                {
+                    res.moveFrom.x = 3;
+                    res.moveFrom.y = 7;
+
+                    res.moveTo.x = 7;
+                    res.moveTo.y = 7;
+                }
+
+                res.castling = true;
+            }
+
+
+            string symb = move.Substring(0, 1);
+
+            switch (symb)
+            {
+                case "h": { res.moveFrom.x = 0; break; }
+                case "g": { res.moveFrom.x = 1; break; }
+                case "f": { res.moveFrom.x = 2; break; }
+                case "e": { res.moveFrom.x = 3; break; }
+                case "d": { res.moveFrom.x = 4; break; }
+                case "c": { res.moveFrom.x = 5; break; }
+                case "b": { res.moveFrom.x = 6; break; }
+                case "a": { res.moveFrom.x = 7; break; }
+            }
+
+            int second = Int32.Parse(move.Substring(1, 1));
+
+            res.moveFrom.y = second - 1;
+
+            symb = move.Substring(2, 1);
+
+            switch (symb)
+            {
+                case "h": { res.moveTo.x = 0; break; }
+                case "g": { res.moveTo.x = 1; break; }
+                case "f": { res.moveTo.x = 2; break; }
+                case "e": { res.moveTo.x = 3; break; }
+                case "d": { res.moveTo.x = 4; break; }
+                case "c": { res.moveTo.x = 5; break; }
+                case "b": { res.moveTo.x = 6; break; }
+                case "a": { res.moveTo.x = 7; break; }
+            }
+
+            second = Int32.Parse(move.Substring(3, 1));
+
             res.moveTo.y = second - 1;
 
             return res;
         }
 
-        public string ToWhite()
+        public string ToWhite() // TODO : add castling processing
         {
             string res = String.Empty;
 
@@ -103,33 +194,51 @@ namespace Chess.Atomic.Crawling.Models
         {
             string res = String.Empty;
 
-            switch (moveFrom.x)
+            if (castling)
             {
-                case 0: { res += "h"; break; }
-                case 1: { res += "g"; break; }
-                case 2: { res += "f"; break; }
-                case 3: { res += "e"; break; }
-                case 4: { res += "d"; break; }
-                case 5: { res += "c"; break; }
-                case 6: { res += "b"; break; }
-                case 7: { res += "a"; break; }
+                if (GameData.Instance.whiteToPlay)
+                {
+                    if (moveTo.x == 0 && moveTo.y == 0)
+                    {
+                        res = "xxOO";
+                    }
+                    if (moveTo.x == 7 && moveTo.y == 0)
+                    {
+                        res = "xOOO";
+                    }
+                }
             }
-
-            res += (moveFrom.y + 1).ToString();
-
-            switch (moveTo.x)
+            else
             {
-                case 0: { res += "h"; break; }
-                case 1: { res += "g"; break; }
-                case 2: { res += "f"; break; }
-                case 3: { res += "e"; break; }
-                case 4: { res += "d"; break; }
-                case 5: { res += "c"; break; }
-                case 6: { res += "b"; break; }
-                case 7: { res += "a"; break; }
-            }
 
-            res += (moveTo.y + 1).ToString();
+                switch (moveFrom.x)
+                {
+                    case 0: { res += "h"; break; }
+                    case 1: { res += "g"; break; }
+                    case 2: { res += "f"; break; }
+                    case 3: { res += "e"; break; }
+                    case 4: { res += "d"; break; }
+                    case 5: { res += "c"; break; }
+                    case 6: { res += "b"; break; }
+                    case 7: { res += "a"; break; }
+                }
+
+                res += (moveFrom.y + 1).ToString();
+
+                switch (moveTo.x)
+                {
+                    case 0: { res += "h"; break; }
+                    case 1: { res += "g"; break; }
+                    case 2: { res += "f"; break; }
+                    case 3: { res += "e"; break; }
+                    case 4: { res += "d"; break; }
+                    case 5: { res += "c"; break; }
+                    case 6: { res += "b"; break; }
+                    case 7: { res += "a"; break; }
+                }
+
+                res += (moveTo.y + 1).ToString();
+            }
 
             return res;
         }

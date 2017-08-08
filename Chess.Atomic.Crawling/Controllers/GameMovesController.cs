@@ -21,12 +21,12 @@ namespace Chess.Atomic.Crawling.Controllers
 
         public ActionResult Index()
         {
-            return View(); 
+            return View();
         }
 
 
 
-        
+
         public async Task<EmptyResult> PlayWhite()
         {
             GameData.Instance.curMoves = string.Empty;
@@ -34,12 +34,12 @@ namespace Chess.Atomic.Crawling.Controllers
             GameData.Instance.whiteToPlay = true;
             GameData.Instance.reset = false;
 
-            await MainEngine.Go();
+            await MainEngine.Instance.Go();
 
             return new EmptyResult();
         }
 
-        
+
         public async Task<EmptyResult> PlayBlack()
         {
             GameData.Instance.curMoves = string.Empty;
@@ -47,14 +47,14 @@ namespace Chess.Atomic.Crawling.Controllers
             GameData.Instance.whiteToPlay = true;
             GameData.Instance.reset = false;
 
-            await MainEngine.Go();
+            await MainEngine.Instance.Go();
 
             return new EmptyResult();
         }
 
         public EmptyResult Reset()
         {
-            MainEngine.Reset();
+            MainEngine.Instance.Reset();
 
             return new EmptyResult();
         }
@@ -65,7 +65,7 @@ namespace Chess.Atomic.Crawling.Controllers
         public JsonResult ShowBoard()
         {
             var jsondata = new { curHint = GameData.Instance.curHint, curState = GameData.Instance.curState };
-            
+
             var res = Json(jsondata, JsonRequestBehavior.AllowGet);
 
             return res;
@@ -110,11 +110,11 @@ namespace Chess.Atomic.Crawling.Controllers
 
         public ActionResult HintOld([Bind(Include = "moves,winner")]string moves, string winner)
         {
-            HintModel hints = HintsEngine.FindHints(moves, winner);
+            HintModel hints = HintsEngine.Instance.FindHints(moves, winner);
 
 
             return View("~/Views/GameMoves/Hintsold.cshtml", hints);
         }
 
-            }
+    }
 }

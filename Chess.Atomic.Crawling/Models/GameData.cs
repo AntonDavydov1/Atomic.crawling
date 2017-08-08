@@ -12,10 +12,10 @@ namespace Chess.Atomic.Crawling.Models
             curState = new int[64] {
                 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
+                -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1,
                 2, 2, 2, 2, 2, 2, 2, 2,
                 2, 2, 2, 2, 2, 2, 2, 2,
             };
@@ -42,6 +42,8 @@ namespace Chess.Atomic.Crawling.Models
 
         public Move curHint;
 
+        public Move lastMove;
+
         public bool whiteToPlay;
 
         public bool reset { get; set; }
@@ -51,10 +53,10 @@ namespace Chess.Atomic.Crawling.Models
             curState = new int[64] {
                 1, 1, 1, 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1, 1, 1, 1,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
+                -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1,
+                -1, -1, -1, -1, -1, -1, -1, -1,
                 2, 2, 2, 2, 2, 2, 2, 2,
                 2, 2, 2, 2, 2, 2, 2, 2,
             };
@@ -68,6 +70,11 @@ namespace Chess.Atomic.Crawling.Models
             curHint.moveTo.x = 0;
             curHint.moveTo.y = 0;
 
+            lastMove.moveFrom.x = 0;
+            lastMove.moveFrom.y = 0;
+            lastMove.moveTo.x = 0;
+            lastMove.moveTo.y = 0;
+
             whiteToPlay = true;
 
             reset = false;
@@ -77,8 +84,8 @@ namespace Chess.Atomic.Crawling.Models
         {
             
 
-            foreach (var g in prevPlayedGames)
-            { }
+            //foreach (var g in prevPlayedGames)
+            //{ }
         }
     }
 }

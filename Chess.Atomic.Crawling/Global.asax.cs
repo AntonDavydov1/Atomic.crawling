@@ -32,18 +32,18 @@ namespace Chess.Atomic.Crawling
                 { 
                 }
 
-                List<AtomicGameInfoOld> sameMoves = null;
+            //    List<AtomicGameInfoOld> sameMoves = null;
 
-                foreach (var g in GameData.Instance.prevPlayedGames)
-                {
-                    sameMoves = GameData.Instance.prevPlayedGames.Where(game => String.Equals(game.moves, g.moves)).ToList();
+            //    foreach (var g in GameData.Instance.prevPlayedGames)
+            //    {
+            //        sameMoves = GameData.Instance.prevPlayedGames.Where(game => String.Equals(game.moves, g.moves)).ToList();
 
-                    sameMoves.Remove(g);
-                    if (sameMoves.Count > 0) context.AtomicGameInfoOlds.RemoveRange(sameMoves);
+            //        sameMoves.Remove(g);
+            //        if (sameMoves.Count > 0) context.AtomicGameInfoOlds.RemoveRange(sameMoves);
                     
-                }
+            //    }
 
-                context.SaveChanges();
+            //    context.SaveChanges();
             }
         }
     }
