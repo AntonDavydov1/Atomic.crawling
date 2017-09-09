@@ -11,7 +11,6 @@ namespace Chess.Atomic.Crawling.SignalR
 {
     public class ConnectionBoard
     {
-        // Singleton instance
         private readonly static ConnectionBoard _instance = new ConnectionBoard(GlobalHost.ConnectionManager.GetHubContext<BoardHub>());
 
         public static ConnectionBoard Instance
@@ -29,14 +28,13 @@ namespace Chess.Atomic.Crawling.SignalR
             _context = context;
         }
 
-        public void UpdateBoard()
+        public void UpdateBoard(bool whiteToWin)
         {
             var data = new { curHint = GameData.Instance.curHint, curState = GameData.Instance.curState };
 
             //var jsondata = Json.Encode(data);
-
-            _context.Clients.All.UpdateBoardYo(data);
-            
+            if (whiteToWin) _context.Clients.All.UpdateBoardWhite(data);
+            else _context.Clients.All.UpdateBoardBlack(data);
         }
     }
 }

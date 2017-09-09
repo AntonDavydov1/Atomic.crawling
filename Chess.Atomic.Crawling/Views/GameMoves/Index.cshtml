@@ -13,26 +13,31 @@
 <body>
     <div style="background-image: url(../../Images/brown512.png); background-size: cover; width:256px; height: 256px"><canvas id="board" width="256" height="256"></canvas></div>
 
-    @using (Ajax.BeginForm("ShowBoard", new AjaxOptions { OnSuccess = "OnSuccess" }))
+    @using (Ajax.BeginForm("ShowBoard", new AjaxOptions { OnSuccess = "UpdateBoardBlack" }))
     {
-        <input type="submit" value="Show board" />
+        <input type="submit" value="Show board black" />
     }
+
+
     <br />
+
+    @using (Ajax.BeginForm("ShowBoard", new AjaxOptions { OnSuccess = "UpdateBoardWhite" }))
+    {
+        <input type="submit" value="Show board white" />
+    }
+
     <div id="results"></div>
 
-    @*@Ajax.ActionLink("Play for white", "PlayWhite", null);*@
+    @Ajax.ActionLink("Play for white", "PlayWhite", null);
 
     @Ajax.ActionLink("New game for black", "PlayBlack", null);
 
     @Ajax.ActionLink("Stop", "Reset", null);
 
     <script type="text/javascript">
-        function OnSuccess(data) {
-            
-            UpdateBoard(data);
-        }
 
-        function UpdateBoard(data) {
+
+        function UpdateBoardBlack(data) {
             var b_canvas = document.getElementById("board");
             b_canvas.width = 256;
             var b_context = b_canvas.getContext("2d");
@@ -57,6 +62,34 @@
             b_context.fillStyle = "#0000AA";
             b_context.fillRect(data.curHint.moveFrom.x * 32, data.curHint.moveFrom.y * 32, 32, 32);
             b_context.fillRect(data.curHint.moveTo.x * 32, data.curHint.moveTo.y * 32, 32, 32);
+
+        }
+
+        function UpdateBoardWhite(data) {
+            var b_canvas = document.getElementById("board");
+            b_canvas.width = 256;
+            var b_context = b_canvas.getContext("2d");
+
+            var x = 0;
+            var y = 0;
+
+
+            for (var i = 0; i < data.curState.length; i++) {
+                if (data.curState[i] == -1) continue;
+                else if (data.curState[i] == 1) b_context.fillStyle = "#EEEEEE";
+                else if (data.curState[i] == 2) b_context.fillStyle = "#111111";
+
+                x = i % 8;
+                //y = parseInt(i / 8);
+
+                y = (i / 8 | 0);
+
+                b_context.fillRect((7 - x) * 32, (7 - y) * 32, 32, 32);
+            }
+
+            b_context.fillStyle = "#0000AA";
+            b_context.fillRect((7 - data.curHint.moveFrom.x) * 32, (7 - data.curHint.moveFrom.y) * 32, 32, 32);
+            b_context.fillRect((7 - data.curHint.moveTo.x) * 32, (7 - data.curHint.moveTo.y) * 32, 32, 32);
 
         }
     </script>

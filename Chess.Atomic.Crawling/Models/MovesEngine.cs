@@ -24,11 +24,18 @@ namespace Chess.Atomic.Crawling.Models
 
             var hint = res.hints.FirstOrDefault();
 
-            if (hint.Key != null) GameData.Instance.curHint = String.Equals(GameData.Instance.winner, "white") ? Move.ParseWhite(hint.Key) : Move.ParseBlack(hint.Key);
-            else GameData.Instance.curHint = String.Equals(GameData.Instance.winner, "white") ? Move.ParseWhite("g2b8") : Move.ParseBlack("g2b8");
+            //if (hint.Key != null) GameData.Instance.curHint = String.Equals(GameData.Instance.winner, "white") ? Move.ParseWhite(hint.Key) : Move.ParseBlack(hint.Key);
+            //else GameData.Instance.curHint = String.Equals(GameData.Instance.winner, "white") ? Move.ParseWhite("g2b8") : Move.ParseBlack("g2b8");
+
+            if (hint.Key != null) GameData.Instance.curHint = Move.ParseBlack(hint.Key);
+            else
+            {
+                GameData.Instance.curHint = Move.ParseBlack("g2b8");
+                MainEngine.Instance.Reset();
+            }
         }
 
-        public static bool WhiteMoves(int[] curPos, Move lastMove, Move highlighted, ref Move newMove)
+        public static bool WhiteMoves(int[] curPos, Move lastMove, Move highlighted, ref Move newMove, bool whiteToWin)
         {
             if (curPos.Length != 64) throw new Exception();
 
@@ -38,8 +45,8 @@ namespace Chess.Atomic.Crawling.Models
                 return false;
             else
             {
-                int indFrom = highlighted.moveFrom.y * 8 + highlighted.moveFrom.x;
-                int indTo = highlighted.moveTo.y * 8 + highlighted.moveTo.x;
+                int indFrom = whiteToWin ? (7 - highlighted.moveFrom.y) * 8 + (7 - highlighted.moveFrom.x) : highlighted.moveFrom.y * 8 + highlighted.moveFrom.x;
+                int indTo = whiteToWin ? (7 - highlighted.moveTo.y) * 8 + (7 - highlighted.moveTo.x) : highlighted.moveTo.y * 8 + highlighted.moveTo.x; ;
 
                 if (curPos[indFrom] == (int)SquareState.white && curPos[indTo] == (int)SquareState.white)
                 {
@@ -111,12 +118,11 @@ namespace Chess.Atomic.Crawling.Models
                 }
 
                 return true;
-            }
-
-            return false;
- 
+            } 
         }
-        public static bool BlackMoves(int[] curPos, Move lastMove, Move highlighted, ref Move newMove)
+
+
+        public static bool BlackMoves(int[] curPos, Move lastMove, Move highlighted, ref Move newMove, bool whiteToWin)
         {
             if (curPos.Length != 64) throw new Exception();
 
@@ -126,8 +132,8 @@ namespace Chess.Atomic.Crawling.Models
                 return false;
             else
             {
-                int indFrom = highlighted.moveFrom.y * 8 + highlighted.moveFrom.x;
-                int indTo = highlighted.moveTo.y * 8 + highlighted.moveTo.x;
+                int indFrom = whiteToWin ? (7 - highlighted.moveFrom.y) * 8 + (7 - highlighted.moveFrom.x) : highlighted.moveFrom.y * 8 + highlighted.moveFrom.x;
+                int indTo = whiteToWin ? (7 - highlighted.moveTo.y) * 8 + (7 - highlighted.moveTo.x) : highlighted.moveTo.y * 8 + highlighted.moveTo.x; ;
 
 
                 if (curPos[indFrom] == (int)SquareState.black && curPos[indTo] == (int)SquareState.black)
@@ -200,9 +206,8 @@ namespace Chess.Atomic.Crawling.Models
 
                 return true;
             }
-
-            return false;
-
         }
+
+
     }
 }

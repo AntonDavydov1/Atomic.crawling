@@ -33,39 +33,41 @@ namespace Chess.Atomic.Crawling.Models
             }
         }
 
-        public static bool ScanBoard(Bitmap bmp, ref int[] board, ref Move highlighted)
+        public static bool ScanBoard(Bitmap bmp, ref int[] board, ref Move highlighted, bool whiteTowin)
         {
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 bool firstLastMove = true;
 
-                for (int v = 0; v < 8; ++v)
+                for (int x = 0; x < 8; ++x)
                 {
-                    for (int h = 0; h < 8; ++h)
+                    for (int y = 0; y < 8; ++y)
                     {
-                        var pix1 = bmp.GetPixel(h * size + 25, v * size + 33);
-                        var pix2 = bmp.GetPixel(h * size + 38, v * size + 33);
+                        int ind = whiteTowin ? (7 - x) * 8 + (7 - y) : (x * 8 + y);
 
-                        var pixLastMove = bmp.GetPixel(h * size + 5, v * size + 5);
+                        var pix1 = bmp.GetPixel(y * size + 25, x * size + 33);
+                        var pix2 = bmp.GetPixel(y * size + 38, x * size + 33);
 
-                        board[v * 8 + h] = (int)SquareState.empty;
+                        var pixLastMove = bmp.GetPixel(y * size + 5, x * size + 5);
+
+                        board[ind] = (int)SquareState.empty;
                         if (pixLastMove == PixelLastMoveBlack || pixLastMove == PixelLastMoveWhite) 
                         {
                             if (firstLastMove)
                             {
-                                highlighted.moveFrom.x = h;
-                                highlighted.moveFrom.y = v;
+                                highlighted.moveFrom.x = y;
+                                highlighted.moveFrom.y = x;
 
                                 firstLastMove = false;
                             }
                             else
                             {
-                                highlighted.moveTo.x = h;
-                                highlighted.moveTo.y = v;
+                                highlighted.moveTo.x = y;
+                                highlighted.moveTo.y = x;
                             }
                         }
-                        if (pix1 == PixelWhite && pix2 == PixelWhite) board[v * 8 + h] = (int)SquareState.white;
-                        if (pix1 == PixelBlack && pix2 == PixelBlack) board[v * 8 + h] = (int)SquareState.black;
+                        if (pix1 == PixelWhite && pix2 == PixelWhite) board[ind] = (int)SquareState.white;
+                        if (pix1 == PixelBlack && pix2 == PixelBlack) board[ind] = (int)SquareState.black;
 
                     }
                 }

@@ -42,7 +42,7 @@ namespace Chess.Atomic.Crawling.Models
                 2, 2, 2, 2, 2, 2, 2, 2,
             };
 
-
+            bool whiteToWin = String.Equals(GameData.Instance.winner, "white");
 
             Move newMove = new Move();
 
@@ -53,10 +53,10 @@ namespace Chess.Atomic.Crawling.Models
 
                 screen = GraphicsEngine.CaptureScreen();
 
-                if (GraphicsEngine.ScanBoard(screen, ref newState, ref highlighted))
+                if (GraphicsEngine.ScanBoard(screen, ref newState, ref highlighted, whiteToWin))
                 {
 
-                    if (GameData.Instance.whiteToPlay && MovesEngine.WhiteMoves(GameData.Instance.curState, GameData.Instance.lastMove, highlighted, ref newMove))
+                    if (GameData.Instance.whiteToPlay && MovesEngine.WhiteMoves(GameData.Instance.curState, GameData.Instance.lastMove, highlighted, ref newMove, whiteToWin))
                     {
                         MovesEngine.MakeMove(newMove);
 
@@ -74,9 +74,9 @@ namespace Chess.Atomic.Crawling.Models
 
                         newMove.castling = false;
 
-                        ConnectionBoard.Instance.UpdateBoard();
+                        ConnectionBoard.Instance.UpdateBoard(whiteToWin);
                     }
-                    else if (MovesEngine.BlackMoves(GameData.Instance.curState, GameData.Instance.lastMove, highlighted, ref newMove))
+                    else if (MovesEngine.BlackMoves(GameData.Instance.curState, GameData.Instance.lastMove, highlighted, ref newMove, whiteToWin))
                     {
                         MovesEngine.MakeMove(newMove);
 
@@ -94,7 +94,8 @@ namespace Chess.Atomic.Crawling.Models
 
                         newMove.castling = false;
 
-                        ConnectionBoard.Instance.UpdateBoard();
+                        ConnectionBoard.Instance.UpdateBoard(whiteToWin);
+
                     }
                 }
 
@@ -105,7 +106,7 @@ namespace Chess.Atomic.Crawling.Models
                     return Task.FromResult(true);
                 }
 
-                Thread.Sleep(200);
+                Thread.Sleep(10);
 
             }
 
